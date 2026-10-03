@@ -1,0 +1,455 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>trader — one stock, every day</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  color-scheme: dark;
+  --bg: #0c0d0f; --surface: #15171a; --surface-2: #1c1f23; --line: #2a2e33;
+  --ink: #f4f4f2; --ink-2: #b9bab4; --ink-3: #7d7f7a;
+  --trader: #3987e5; --spy: #8b8d88; --good: #1baf7a; --bad: #e66767;
+  --radius: 16px;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    color-scheme: light;
+    --bg: #f6f6f3; --surface: #ffffff; --surface-2: #f0efec; --line: #e2e1dc;
+    --ink: #0b0b0b; --ink-2: #52514e; --ink-3: #85847f;
+    --trader: #2a78d6; --spy: #85847f; --good: #0f8a5f; --bad: #c83b3a;
+  }
+}
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg: #f6f6f3; --surface: #ffffff; --surface-2: #f0efec; --line: #e2e1dc;
+  --ink: #0b0b0b; --ink-2: #52514e; --ink-3: #85847f;
+  --trader: #2a78d6; --spy: #85847f; --good: #0f8a5f; --bad: #c83b3a;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink);
+  font: 16px/1.55 Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+.wrap { max-width: 1040px; margin: 0 auto; padding: 0 20px; }
+header.top { display: flex; justify-content: space-between; align-items: center; padding: 22px 0; }
+.brand { font-weight: 800; letter-spacing: -0.02em; font-size: 18px; }
+.brand span { color: var(--trader); }
+.pill { font: 600 12px/1 Inter; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2);
+  border: 1px solid var(--line); border-radius: 999px; padding: 7px 12px; display: inline-flex; gap: 8px; align-items: center; }
+.dot { width: 8px; height: 8px; border-radius: 50%; background: var(--good); box-shadow: 0 0 0 0 var(--good);
+  animation: pulse 2.2s infinite; }
+@keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(27,175,122,.55);} 70% { box-shadow: 0 0 0 10px rgba(27,175,122,0);} 100% { box-shadow: 0 0 0 0 rgba(27,175,122,0);} }
+.hero { padding: 48px 0 28px; }
+.eyebrow { color: var(--ink-3); font-weight: 600; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; }
+h1 { font-size: clamp(34px, 6vw, 60px); line-height: 1.04; letter-spacing: -0.035em; margin: 12px 0 18px; font-weight: 800; }
+h1 em { font-style: normal; color: var(--trader); }
+.lede { color: var(--ink-2); font-size: 19px; max-width: 640px; margin: 0; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 24px; }
+.scoreboard { display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 16px; margin: 32px 0 16px; }
+.stat .k { color: var(--ink-3); font-size: 13px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
+.stat .v { font-size: clamp(34px, 5vw, 54px); font-weight: 800; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; margin-top: 6px; }
+.stat .s { color: var(--ink-2); font-size: 14px; margin-top: 4px; }
+.swatch { display: inline-block; width: 14px; height: 3px; border-radius: 2px; vertical-align: middle; margin-right: 8px; }
+.chart-card { padding: 20px 20px 12px; }
+.chart-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.legend { display: flex; gap: 18px; color: var(--ink-2); font-size: 14px; }
+svg { display: block; width: 100%; height: auto; overflow: visible; }
+.axis text { fill: var(--ink-3); font: 12px Inter; }
+.grid line { stroke: var(--line); stroke-width: 1; }
+.tip { position: absolute; pointer-events: none; background: var(--surface-2); border: 1px solid var(--line);
+  border-radius: 10px; padding: 10px 12px; font-size: 13px; min-width: 160px; opacity: 0; transition: opacity .12s; }
+.tip b { font-variant-numeric: tabular-nums; }
+.empty { color: var(--ink-2); text-align: center; padding: 8px 0 18px; font-size: 15px; }
+section { padding: 56px 0 0; }
+h2 { font-size: 28px; letter-spacing: -0.02em; margin: 0 0 8px; }
+.sub { color: var(--ink-2); margin: 0 0 24px; max-width: 680px; }
+.steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+.step .n { font: 600 13px JetBrains Mono, monospace; color: var(--trader); }
+.step h3 { margin: 10px 0 6px; font-size: 17px; letter-spacing: -0.01em; }
+.step p { margin: 0; color: var(--ink-2); font-size: 14.5px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { font: 600 14px JetBrains Mono, monospace; padding: 8px 12px; border-radius: 10px; background: var(--surface-2);
+  border: 1px solid var(--line); }
+.chip small { font: 500 12px Inter; color: var(--ink-3); margin-left: 6px; }
+table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+th { text-align: left; color: var(--ink-3); font-weight: 600; font-size: 12px; letter-spacing: .05em; text-transform: uppercase;
+  padding: 10px 12px; border-bottom: 1px solid var(--line); }
+td { padding: 12px; border-bottom: 1px solid var(--line); font-variant-numeric: tabular-nums; }
+td.num { text-align: right; } th.num { text-align: right; }
+.up { color: var(--good); } .down { color: var(--bad); }
+.rules { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.rule .big { font-size: 28px; font-weight: 800; letter-spacing: -0.02em; }
+.rule p { margin: 4px 0 0; color: var(--ink-2); font-size: 14px; }
+footer { color: var(--ink-3); font-size: 13.5px; padding: 64px 0 48px; }
+footer ul { padding-left: 18px; margin: 10px 0 0; } footer li { margin: 4px 0; }
+.toggle { background: none; border: 1px solid var(--line); color: var(--ink-2); border-radius: 999px; padding: 6px 12px; cursor: pointer; font: 500 13px Inter; }
+.play { background: var(--ink); color: var(--bg); border: 0; border-radius: 999px; padding: 8px 14px;
+  font: 600 13px Inter; cursor: pointer; display: inline-flex; gap: 8px; align-items: center; }
+.play:disabled { opacity: .35; cursor: default; }
+.playhead { font: 600 13px JetBrains Mono, monospace; color: var(--ink-2); min-width: 64px; }
+.cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+.tcard { display: flex; flex-direction: column; gap: 14px; }
+.tcard .top { display: flex; justify-content: space-between; align-items: baseline; }
+.tcard .tk { font: 800 30px/1 Inter; letter-spacing: -0.03em; }
+.tcard .ret { font: 800 26px/1 Inter; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.tcard .when { color: var(--ink-3); font-size: 13px; margin-top: 6px; }
+.knew { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.knew div { background: var(--surface-2); border-radius: 10px; padding: 10px; }
+.knew .k { color: var(--ink-3); font-size: 11.5px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; }
+.knew .v { font: 700 16px Inter; font-variant-numeric: tabular-nums; margin-top: 2px; }
+.bar { position: relative; height: 8px; border-radius: 4px; background: var(--surface-2); overflow: hidden; }
+.bar i { position: absolute; top: 0; bottom: 0; background: var(--trader); border-radius: 4px; }
+.bar b { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--ink); }
+.muted { color: var(--ink-3); font-size: 13px; }
+@media (max-width: 760px) {
+  .cards { grid-template-columns: 1fr; }
+  .scoreboard, .steps, .rules { grid-template-columns: 1fr; }
+  .hide-sm { display: none; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div id="demo-banner" class="card" style="display:none; margin-top:18px; border-color:var(--trader)"></div>
+  <header class="top">
+    <div class="brand">trader<span>.</span></div>
+    <div style="display:flex; gap:10px; align-items:center">
+      <span class="pill"><span class="dot"></span><span id="status">Live</span></span>
+      <button class="toggle" id="theme" aria-label="Toggle theme">◐</button>
+    </div>
+  </header>
+
+  <div class="hero">
+    <div class="eyebrow" id="eyebrow"></div>
+    <h1 id="headline">One stock. Every morning.<br><em>Written down before the outcome.</em></h1>
+    <p class="lede">A machine reads which trading strategies have statistically beaten the market,
+      picks the single stock they're buying with the best evidence behind it, and writes the call
+      down at 10am ET — permanently. Then the market grades it.</p>
+  </div>
+
+  <div class="scoreboard">
+    <div class="card stat">
+      <div class="k"><span class="swatch" style="background:var(--trader)"></span>$1,000 in trader</div>
+      <div class="v" id="v-trader">$1,000</div>
+      <div class="s" id="s-trader"></div>
+    </div>
+    <div class="card stat">
+      <div class="k"><span class="swatch" style="background:var(--spy)"></span>$1,000 in the S&amp;P 500</div>
+      <div class="v" id="v-spy">$1,000</div>
+      <div class="s" id="s-spy"></div>
+    </div>
+    <div class="card stat">
+      <div class="k">Record</div>
+      <div class="v" id="v-days">0</div>
+      <div class="s" id="s-days"></div>
+    </div>
+  </div>
+
+  <div class="card chart-card" style="position:relative">
+    <div class="chart-head">
+      <div class="eyebrow"><span id="curve-label">Growth of $1,000 — live since</span> <span id="since"></span></div>
+      <div class="legend" style="align-items:center">
+        <button class="play" id="play">▶ Play the record</button><span class="playhead" id="playhead"></span>
+        <span><span class="swatch" style="background:var(--trader)"></span>trader</span>
+        <span><span class="swatch" style="background:var(--spy)"></span>S&amp;P 500 (SPY)</span>
+      </div>
+    </div>
+    <svg id="chart" role="img" aria-label="Growth of $1,000: trader vs SPY"></svg>
+    <div class="empty" id="empty"></div>
+    <div class="tip" id="tip"></div>
+  </div>
+
+  <section>
+    <h2>How it works</h2>
+    <p class="sub">No gut feel, no AI choosing stocks, no editing afterwards. Four steps, the same every morning.</p>
+    <div class="steps">
+      <div class="card step"><div class="n">01</div><h3>Find what's proven</h3>
+        <p>A research system tests trading strategies against the S&amp;P 500. Only the ones whose win over the market is statistically significant make the shortlist.</p></div>
+      <div class="card step"><div class="n">02</div><h3>See what they're buying</h3>
+        <p>Of the stocks those proven strategies are buying today, drop anything illiquid, too volatile, or near earnings.</p></div>
+      <div class="card step"><div class="n">03</div><h3>Pick one</h3>
+        <p>Same evidence, same edge — so pick the calmest name: least chance of being shaken out by noise. Hold it until something clearly better comes along.</p></div>
+      <div class="card step"><div class="n">04</div><h3>Write it down, forever</h3>
+        <p>Every call is committed to an append-only, timestamped log at 10am ET. Wins, losses, and cash days stay on the record.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Today's shortlist</h2>
+    <p class="sub" id="shortlist-sub"></p>
+    <div class="chips" id="shortlist"></div>
+  </section>
+
+  <section>
+    <h2 id="cards-title">Each call, as it was made</h2>
+    <p class="sub" id="cards-sub">What the engine knew at 10:00 that morning — and what happened next.</p>
+    <div class="cards" id="cards"></div>
+  </section>
+
+  <section>
+    <h2>Every trade</h2>
+    <p class="sub">All of them. Stops, switches and losses included.</p>
+    <div class="card" style="padding:4px 8px; overflow-x:auto">
+      <table>
+        <thead><tr><th>Called</th><th>Stock</th><th class="num">Bought</th><th class="num hide-sm">Stop</th>
+          <th class="num hide-sm">Target</th><th>Ended</th><th class="num">Return</th></tr></thead>
+        <tbody id="ledger"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>The rules it can't break</h2>
+    <div class="rules">
+      <div class="card rule"><div class="big">1 stock</div><p>At all times. To buy something new, it sells everything first.</p></div>
+      <div class="card rule"><div class="big" id="r-stop"></div><p>Stop on every position, fixed in advance. Hit it and it's out.</p></div>
+      <div class="card rule"><div class="big">0 edits</div><p>A call is never changed once made; outcomes are only ever appended.</p></div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="eyebrow">The fine print, in full</div>
+    <ul>
+      <li>Trades are virtual: bought and sold at the day's closing price, by rule. No real money, no real fills.</li>
+      <li>Returns are gross of trading costs (roughly <span id="f-friction"></span> per round trip).</li>
+      <li>Averages carry a 90% confidence interval; with fewer than <span id="f-min"></span> closed trades the page says so instead of guessing.</li>
+      <li>The shortlist comes from a research system's statistically certified strategies. A longer "as if we'd started in July" replay will appear here, drawn dashed and labelled as a reconstruction, once that system publishes its certification history.</li>
+      <li>The record restarted on Sep 26, 2026 with this engine. Calls from an earlier, retired engine (Sep 2–25) were removed from the record then; they remain, unedited, in the project's private history.</li>
+      <li id="f-link"></li>
+      <li>Every number on this page is generated from the committed record. Built <span id="built"></span>.</li>
+    </ul>
+  </footer>
+</div>
+
+<script>
+const DATA = {"built": "2026-10-03", "era_start": "2026-09-26", "first_pick": "2026-09-03", "trades": [{"date": "2026-09-08", "ticker": "FRSH", "name": "Freshworks Inc.", "fill_date": "2026-09-08", "fill": 12.1, "stop": 11.13, "target": 13.31, "d_eff": 14.6, "exit_date": "2026-09-23", "exit": 11.89, "exit_reason": "switch", "exit_price_date": "2026-09-11", "return_pct": -1.736, "excess_spy_pct": -1.977, "days_held": 11.0, "replaces": ""}, {"date": "2026-09-23", "ticker": "DOCS", "name": "Doximity, Inc.", "fill_date": "2026-09-23", "fill": 26.57, "stop": 24.44, "target": 31.35, "d_eff": 17.3, "exit_date": "2026-10-01", "exit": 28.5, "exit_reason": "switch", "exit_price_date": "2026-10-01", "return_pct": 7.264, "excess_spy_pct": 7.761, "days_held": 6.0, "replaces": "FRSH"}, {"date": "2026-10-01", "ticker": "DOCU", "name": "DocuSign, Inc.", "fill_date": "2026-10-01", "fill": 69.74, "stop": 64.16, "target": 76.71, "d_eff": 12.4, "exit_date": null, "exit": null, "exit_reason": null, "exit_price_date": null, "return_pct": null, "excess_spy_pct": null, "days_held": null, "replaces": "DOCS"}], "curve": [{"d": "2026-09-03", "t": 1000.0, "s": 1000.0}, {"d": "2026-09-04", "t": 1000.0, "s": 996.15}, {"d": "2026-09-08", "t": 1000.0, "s": 990.67}, {"d": "2026-09-09", "t": 985.95, "s": 986.07}, {"d": "2026-09-10", "t": 980.99, "s": 980.16}, {"d": "2026-09-11", "t": 982.64, "s": 988.51}, {"d": "2026-09-14", "t": 982.64, "s": 984.1}, {"d": "2026-09-15", "t": 982.64, "s": 979.59}, {"d": "2026-09-16", "t": 982.64, "s": 975.27}, {"d": "2026-09-17", "t": 982.64, "s": 986.33}, {"d": "2026-09-21", "t": 982.64, "s": 1000.43}, {"d": "2026-09-22", "t": 982.64, "s": 1000.27}, {"d": "2026-09-23", "t": 982.64, "s": 993.07}, {"d": "2026-09-24", "t": 963.04, "s": 992.25}, {"d": "2026-09-25", "t": 974.51, "s": 997.65}, {"d": "2026-09-28", "t": 968.96, "s": 990.22}, {"d": "2026-09-29", "t": 980.8, "s": 988.4}, {"d": "2026-09-30", "t": 1048.1, "s": 986.37}, {"d": "2026-10-01", "t": 1054.02, "s": 988.13}], "stats": {"decisions": 21, "closed": 2, "open": 1, "return_per_trade": null, "min_n": 5}, "rules": {"stop_pct": 0.08, "friction": 0.003, "mode": "virtual"}, "demo": {"start": "2026-09-03", "end": "2026-10-02", "accepted": "company name, sector, industry and market cap are today's values (the table keeps no history); a market-cap move across the $300M floor, an industry reclassification, or an earnings date reported after the replayed morning could differ from what was known then", "gaps": [{"ticker": "FRSH", "price_date": "2026-09-11", "exit_date": "2026-09-23"}]}};
+const $ = id => document.getElementById(id);
+const esc = v => String(v ?? "").replace(/[&<>"']/g, ch => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[ch]));
+const usd = v => "$" + v.toLocaleString("en-US", {minimumFractionDigits: 2, maximumFractionDigits: 2});
+const pct = v => (v >= 0 ? "+" : "") + v.toFixed(2) + "%";
+const fmtDate = s => new Date(s + "T12:00:00").toLocaleDateString("en-US", {month: "short", day: "numeric"});
+
+(function theme() {
+  const root = document.documentElement;
+  let saved = null; try { saved = localStorage.getItem("trader-theme"); } catch (e) {}
+  if (saved) root.dataset.theme = saved;
+  $("theme").onclick = () => {
+    const dark = getComputedStyle(root).colorScheme.includes("dark");
+    root.dataset.theme = dark ? "light" : "dark";
+    try { localStorage.setItem("trader-theme", root.dataset.theme); } catch (e) {}
+    draw();
+  };
+})();
+
+const DEMO = DATA.demo || null;
+
+function demoMode() {
+  if (!DEMO) {
+    $("f-link").innerHTML = `Want to see it run? <a href="demo.html" style="color:var(--trader)">The demo replays this engine on past data</a>.`;
+    return;
+  }
+  document.title = "trader — demo on historic data";
+  const b = $("demo-banner");
+  b.style.display = "block";
+  b.innerHTML = `<div class="eyebrow" style="color:var(--trader)">Demo · replayed on historic data</div>
+    <p style="margin:8px 0 0">This is <b>not</b> the live record. The same engine was run as of 07:00 ET on each past
+    morning from ${fmtDate(DEMO.start)} to ${fmtDate(DEMO.end)}, seeing only what had been published by then — the
+    certifications from the evening before, prices up to the previous close. Nothing here was called in advance,
+    and the line is drawn dashed for that reason. <a href="index.html" style="color:var(--trader)">The live record is here.</a></p>`;
+  $("headline").innerHTML = "One stock. Every morning.<br><em>Replayed on what it knew then.</em>";
+  $("curve-label").textContent = "Growth of $1,000 — replayed from";
+  $("cards-title").textContent = "Each call, as the replay made it";
+  $("cards-sub").textContent = "What the engine could see at 10:00 on each past morning — and what happened next.";
+  document.querySelectorAll("section").forEach(sec => { if (sec.querySelector("#shortlist")) sec.style.display = "none"; });
+  const extra = [
+    `Replayed, not live: every call on this page was reconstructed by running today's engine on past mornings.`,
+    `Accepted look-ahead: ${esc(DEMO.accepted)}.`,
+    ...(DEMO.gaps || []).map(g => `${esc(g.ticker)}: the price feed stopped after ${fmtDate(g.price_date)}; its exit on ${fmtDate(g.exit_date)} is priced at that last observed close, and a stop or target touched inside the gap cannot be known.`),
+  ];
+  $("f-link").innerHTML = extra.join("</li><li>");  // every interpolated value above is esc()-ed
+}
+
+function scoreboard() {
+  const c = DATA.curve, last = c[c.length - 1];
+  const t = last ? last.t : 1000, s = last ? last.s : 1000;
+  countUp($("v-trader"), t); countUp($("v-spy"), s);
+  $("s-trader").textContent = last ? pct((t / 1000 - 1) * 100) + " since " + fmtDate(c[0].d) : "Starts with the first call";
+  $("s-spy").textContent = last ? pct((s / 1000 - 1) * 100) + " over the same days" : "Same start, same days";
+  $("v-days").textContent = DATA.stats.decisions;
+  $("s-days").textContent = DEMO ? "replayed trading days"
+    : DATA.stats.decisions === 1 ? "daily decision on record" : "daily decisions on record";
+  $("since").textContent = DATA.first_pick ? fmtDate(DATA.first_pick) : "the first call";
+  $("eyebrow").textContent = DEMO ? "Demo · " + DATA.stats.decisions + " replayed trading days"
+    : DATA.first_pick ? "Live record · " + DATA.stats.decisions + " trading days" : "Day 0 · the record starts Monday";
+  $("status").textContent = DEMO ? "Demo" : DATA.first_pick ? "Live" : "Starting";
+}
+
+function countUp(el, to) {
+  const from = 1000, t0 = performance.now(), dur = 1100;
+  const tick = now => {
+    const k = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - k, 3);
+    el.textContent = usd(from + (to - from) * e);
+    if (k < 1) requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+}
+
+let playing = null;
+
+function draw(upto) {
+  const svg = $("chart"), c = DATA.curve;
+  const W = Math.max(320, svg.parentElement.clientWidth - 40), H = W < 600 ? 240 : 340;
+  const P = {l: 58, r: W < 600 ? 62 : 78, t: 16, b: 30};
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  svg.innerHTML = "";
+  $("play").disabled = c.length < 2;
+  if (c.length < 2) {
+    $("empty").textContent = DATA.first_pick
+      ? "One point so far — the line draws itself from the second trading day."
+      : "The first call is made Monday at 10:00 ET. This chart starts at $1,000 and grows — or doesn't — from there.";
+    const y = H / 2;
+    svg.insertAdjacentHTML("beforeend",
+      `<line x1="${P.l}" x2="${W - P.r}" y1="${y}" y2="${y}" stroke="var(--line)"/>
+       <text x="${P.l - 8}" y="${y + 4}" text-anchor="end" fill="var(--ink-3)" font-size="12">$1,000</text>
+       <circle cx="${P.l}" cy="${y}" r="6" fill="var(--trader)" stroke="var(--surface)" stroke-width="2"/>`);
+    return;
+  }
+  $("empty").textContent = "";
+  const n = upto == null ? c.length - 1 : upto;
+  const vals = c.flatMap(p => [p.t, p.s]);
+  let lo = Math.min(...vals, 1000), hi = Math.max(...vals, 1000);
+  const pad = (hi - lo) * 0.12 || 10; lo -= pad; hi += pad;
+  const x = i => P.l + (W - P.l - P.r) * i / (c.length - 1);
+  const y = v => P.t + (H - P.t - P.b) * (1 - (v - lo) / (hi - lo));
+  const g = [];
+  for (let k = 0; k <= 4; k++) {
+    const v = lo + (hi - lo) * k / 4;
+    g.push(`<line x1="${P.l}" x2="${W - P.r}" y1="${y(v)}" y2="${y(v)}"/>`,
+           `<text x="${P.l - 8}" y="${y(v) + 4}" text-anchor="end">$${Math.round(v).toLocaleString()}</text>`);
+  }
+  const first = c[0].d, last = c[c.length - 1].d;
+  g.push(`<text x="${P.l}" y="${H - 8}">${fmtDate(first)}</text>`,
+         `<text x="${W - P.r}" y="${H - 8}" text-anchor="end">${fmtDate(last)}</text>`);
+  svg.insertAdjacentHTML("beforeend", `<g class="grid axis">${g.join("")}</g>`);
+  const seg = c.slice(0, n + 1);
+  const path = key => seg.map((p, i) => (i ? "L" : "M") + x(i).toFixed(1) + " " + y(p[key]).toFixed(1)).join(" ");
+  svg.insertAdjacentHTML("beforeend",
+    `<path d="${path("s")}" fill="none" stroke="var(--spy)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+     <path id="tpath" d="${path("t")}" fill="none" stroke="var(--trader)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"${DEMO ? ' stroke-dasharray="7 5"' : ""}/>`);
+  // Buy / sell markers where the record says a position filled or exited.
+  const idx = d => c.findIndex(p => p.d === d);
+  const marks = [];
+  DATA.trades.forEach(t => {
+    const a = t.fill_date ? idx(t.fill_date) : -1, b = t.exit_date ? idx(t.exit_date) : -1;
+    if (a >= 0 && a <= n) marks.push(`<circle cx="${x(a)}" cy="${y(c[a].t)}" r="4.5" fill="var(--trader)" stroke="var(--surface)" stroke-width="2"><title>Bought ${esc(t.ticker)}</title></circle>`);
+    if (b >= 0 && b <= n) marks.push(`<circle cx="${x(b)}" cy="${y(c[b].t)}" r="4.5" fill="var(--surface)" stroke="var(--trader)" stroke-width="2"><title>Sold ${esc(t.ticker)} (${esc(t.exit_reason)})</title></circle>`);
+  });
+  svg.insertAdjacentHTML("beforeend", marks.join(""));
+  svg.insertAdjacentHTML("beforeend",
+    `<circle cx="${x(n)}" cy="${y(c[n].t)}" r="5" fill="var(--trader)" stroke="var(--surface)" stroke-width="2"/>
+     <text x="${x(n) + 10}" y="${y(c[n].t) + 4}" fill="var(--ink)" font-size="13" font-weight="600">${usd(c[n].t)}</text>
+     <text x="${x(n) + 10}" y="${y(c[n].s) + (Math.abs(y(c[n].s) - y(c[n].t)) < 16 ? 18 : 4)}" fill="var(--ink-2)" font-size="13">${usd(c[n].s)}</text>
+     <line id="xh" y1="${P.t}" y2="${H - P.b}" stroke="var(--ink-3)" stroke-width="1" opacity="0"/>
+     <rect x="${P.l}" y="0" width="${W - P.l - P.r}" height="${H}" fill="transparent" id="hit"/>`);
+  if (upto == null && !draw.done && !DEMO) {
+    const tp = $("tpath"), len = tp.getTotalLength();
+    tp.style.strokeDasharray = len; tp.style.strokeDashoffset = len;
+    tp.getBoundingClientRect(); tp.style.transition = "stroke-dashoffset 1.4s cubic-bezier(.2,.7,.2,1)";
+    tp.style.strokeDashoffset = 0; draw.done = true;
+  }
+  const tip = $("tip"), hit = $("hit"), xh = $("xh");
+  hit.onmousemove = e => {
+    const r = svg.getBoundingClientRect(), px = (e.clientX - r.left) * W / r.width;
+    const i = Math.max(0, Math.min(n, Math.round((px - P.l) / (W - P.l - P.r) * (c.length - 1))));
+    xh.setAttribute("x1", x(i)); xh.setAttribute("x2", x(i)); xh.setAttribute("opacity", 1);
+    const held = DATA.trades.find(t => t.fill_date && t.fill_date <= c[i].d && (!t.exit_date || t.exit_date > c[i].d));
+    tip.innerHTML = `<div style="color:var(--ink-3)">${fmtDate(c[i].d)}${held ? " · holding " + esc(held.ticker) : " · cash"}</div>
+      <div><span class="swatch" style="background:var(--trader)"></span>trader <b>${usd(c[i].t)}</b></div>
+      <div><span class="swatch" style="background:var(--spy)"></span>SPY <b>${usd(c[i].s)}</b></div>`;
+    tip.style.opacity = 1;
+    tip.style.left = Math.min(r.width - 190, x(i) * r.width / W + 12) + "px";
+    tip.style.top = "64px";
+  };
+  hit.onmouseleave = () => { tip.style.opacity = 0; xh.setAttribute("opacity", 0); };
+}
+
+function play() {
+  const c = DATA.curve;
+  if (playing) { clearInterval(playing); playing = null; $("play").textContent = "▶ Play the record"; draw(); $("playhead").textContent = ""; return; }
+  let i = 0; $("play").textContent = "■ Stop";
+  const step = Math.max(40, Math.min(400, 6000 / c.length));
+  playing = setInterval(() => {
+    draw(i); $("playhead").textContent = fmtDate(c[i].d);
+    $("v-trader").textContent = usd(c[i].t); $("v-spy").textContent = usd(c[i].s);
+    if (++i >= c.length) { clearInterval(playing); playing = null; $("play").textContent = "↻ Play again"; }
+  }, step);
+}
+
+function cards() {
+  const t = DATA.trades.slice().reverse();
+  if (!t.length) { $("cards").innerHTML = `<div class="card muted" style="grid-column:1/-1; text-align:center; padding:28px">The first card appears with Monday's call.</div>`; return; }
+  $("cards").innerHTML = t.map(tr => {
+    const r = tr.return_pct, cls = r == null ? "" : (r >= 0 ? "up" : "down");
+    const funnel = (tr.funnel || "").split("->").map(s => s.trim());
+    const range = tr.target - tr.stop, now = tr.exit ?? tr.fill ?? tr.stop;
+    const pos = v => Math.max(0, Math.min(100, (v - tr.stop) / range * 100));
+    const ended = tr.exit_reason
+      ? `${esc(tr.exit_reason === "switch" ? "Switched out" : tr.exit_reason === "stop" ? "Stopped out" : tr.exit_reason === "target" ? "Hit target" : tr.exit_reason)} on ${fmtDate(tr.exit_date)} after ${tr.days_held ?? "?"} trading days (expected ~${Math.round(tr.d_eff)})`
+      : `Still holding · expected to resolve in ~${Math.round(tr.d_eff)} trading days`;
+    const gap = tr.exit_price_date && tr.exit_date && tr.exit_price_date !== tr.exit_date
+      ? ` · priced at the last observed close (${fmtDate(tr.exit_price_date)}) — the price feed stopped` : "";
+    return `<div class="card tcard">
+      <div class="top"><div><div class="tk">${esc(tr.ticker)}</div>${tr.name ? `<div class="muted">${esc(tr.name)}</div>` : ""}<div class="when">Called ${fmtDate(tr.date)}${tr.replaces ? " · replaced " + esc(tr.replaces.split(":").pop()) : ""}</div></div>
+        <div class="ret ${cls}">${r == null ? "open" : pct(r)}</div></div>
+      ${tr.edge == null ? "" : `<div class="knew">
+        <div><div class="k">Shortlist</div><div class="v">${esc(funnel[0] || "—")} → ${esc(funnel[funnel.length - 1] || "—")}</div></div>
+        <div><div class="k">Edge / day</div><div class="v">${tr.edge ? (tr.edge * 100).toFixed(2) + "%" : "—"}</div></div>
+        <div><div class="k">Bar to clear</div><div class="v">${tr.hurdle ? (tr.hurdle * 100).toFixed(2) + "%" : "—"}</div></div>
+      </div>`}
+      <div>
+        <div class="muted" style="display:flex; justify-content:space-between; margin-bottom:6px"><span>Stop ${usd(tr.stop)}</span><span>Target ${usd(tr.target)}</span></div>
+        <div class="bar"><i style="left:0; width:${pos(now)}%"></i>${tr.fill ? `<b style="left:${pos(tr.fill)}%"></b>` : ""}</div>
+      </div>
+      <div class="muted">${ended}${gap}</div>
+    </div>`;
+  }).join("");
+}
+
+function shortlist() {
+  if (!DATA.shortlist || DEMO) {  // public pages never carry it; the demo has no "today"
+    document.querySelectorAll("section").forEach(sec => { if (sec.querySelector("#shortlist")) sec.style.display = "none"; });
+    return;
+  }
+  const s = DATA.shortlist;
+  $("shortlist-sub").textContent = s.length
+    ? `${s.length} stocks that a statistically proven strategy is buying right now (as of ${fmtDate(DATA.shortlist_as_of)}). The engine picks from these — and only these.`
+    : "No proven strategy is buying anything right now — which means cash.";
+  $("shortlist").innerHTML = s.map(n => `<span class="chip">${esc(n.ticker)}<small>${esc(n.name)}</small></span>`).join("");
+}
+
+function ledger() {
+  const rows = DATA.trades.slice().reverse();
+  $("ledger").innerHTML = rows.length ? rows.map(t => {
+    const r = t.return_pct, cls = r == null ? "" : (r >= 0 ? "up" : "down");
+    const ended = t.exit_reason ? `${esc(t.exit_reason)} · ${fmtDate(t.exit_date)}` : "holding";
+    return `<tr><td>${fmtDate(t.date)}</td><td><b>${esc(t.ticker)}</b></td>
+      <td class="num">${t.fill ? usd(t.fill) : "at the close"}</td><td class="num hide-sm">${usd(t.stop)}</td>
+      <td class="num hide-sm">${usd(t.target)}</td><td>${ended}</td>
+      <td class="num ${cls}">${r == null ? "—" : pct(r)}</td></tr>`;
+  }).join("") : `<tr><td colspan="7" style="color:var(--ink-2); text-align:center; padding:28px">No trades yet. The first call lands Monday morning.</td></tr>`;
+}
+
+function fineprint() {
+  $("r-stop").textContent = "−" + Math.round(DATA.rules.stop_pct * 100) + "%";
+  $("f-friction").textContent = Math.round(DATA.rules.friction * 10000) + " basis points";
+  $("f-min").textContent = DATA.stats.min_n;
+  $("built").textContent = fmtDate(DATA.built) + ", from the record as committed";
+}
+
+demoMode(); scoreboard(); draw(); cards(); shortlist(); ledger(); fineprint();
+$("play").onclick = play;
+let rz; window.addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(() => { if (!playing) draw(); }, 120); });
+</script>
+</body>
+</html>
