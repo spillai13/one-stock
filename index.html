@@ -176,6 +176,22 @@ footer ul { padding-left: 18px; margin: 10px 0 0; } footer li { margin: 4px 0; }
   </section>
 
   <section>
+    <h2>Why only one?</h2>
+    <p class="sub">Most portfolios hold dozens of stocks. That's insurance against not knowing which one is best.
+      Finding the best one is this engine's entire job — so once it has, it puts everything there.</p>
+    <div class="steps">
+      <div class="card step"><h3>Your best idea, undiluted</h3>
+        <p>If one stock has the strongest evidence behind it today, the second- through tenth-best only pull the average down. Spreading money out buys comfort, not return.</p></div>
+      <div class="card step"><h3>Speed counts</h3>
+        <p>The goal is the most growth in the least time: 10% in 5 days beats 10% in 10. Money parked in slower names is money not compounding.</p></div>
+      <div class="card step"><h3>Nowhere to hide</h3>
+        <p>A basket can bury a bad call. One stock can't — every pick is plainly right or wrong, which is what makes this record worth reading.</p></div>
+      <div class="card step"><h3>The price, paid openly</h3>
+        <p>One stock swings harder than twenty. So every position has a stop set before it's bought, and when nothing clears the bar, the answer is cash.</p></div>
+    </div>
+  </section>
+
+  <section>
     <h2>Today's shortlist</h2>
     <p class="sub" id="shortlist-sub"></p>
     <div class="chips" id="shortlist"></div>
@@ -202,7 +218,7 @@ footer ul { padding-left: 18px; margin: 10px 0 0; } footer li { margin: 4px 0; }
   <section>
     <h2>The rules it can't break</h2>
     <div class="rules">
-      <div class="card rule"><div class="big">1 stock</div><p>At all times. To buy something new, it sells everything first.</p></div>
+      <div class="card rule"><div class="big">1 stock</div><p>All in, never spread thin. To buy something new, it sells everything first.</p></div>
       <div class="card rule"><div class="big" id="r-stop"></div><p>Stop on every position, fixed in advance. Hit it and it's out.</p></div>
       <div class="card rule"><div class="big">0 edits</div><p>A call is never changed once made; outcomes are only ever appended.</p></div>
     </div>
@@ -223,7 +239,7 @@ footer ul { padding-left: 18px; margin: 10px 0 0; } footer li { margin: 4px 0; }
 </div>
 
 <script>
-const DATA = {"built": "2026-10-03", "era_start": "2026-09-26", "first_pick": "2026-09-28", "trades": [{"date": "2026-09-28", "ticker": "DOCU", "name": "DocuSign, Inc.", "fill_date": "2026-09-28", "fill": 66.98, "stop": 61.62, "target": 73.68, "d_eff": 12.4, "exit_date": null, "exit": null, "exit_reason": null, "exit_price_date": null, "return_pct": null, "excess_spy_pct": null, "days_held": null, "replaces": ""}], "curve": [{"d": "2026-09-28", "t": 1000.0, "s": 1000.0}, {"d": "2026-09-29", "t": 1000.0, "s": 998.16}, {"d": "2026-09-30", "t": 1002.54, "s": 996.11}, {"d": "2026-10-01", "t": 1041.21, "s": 997.88}], "stats": {"decisions": 5, "closed": 0, "open": 1, "return_per_trade": null, "min_n": 5}, "rules": {"stop_pct": 0.08, "friction": 0.003, "mode": "virtual"}, "demo": null};
+const DATA = {"built": "2026-10-04", "era_start": "2026-09-26", "first_pick": "2026-09-28", "trades": [{"date": "2026-09-28", "ticker": "DOCU", "name": "DocuSign, Inc.", "fill_date": "2026-09-28", "fill": 66.98, "stop": 61.62, "target": 73.68, "d_eff": 12.4, "exit_date": null, "exit": null, "exit_reason": null, "exit_price_date": null, "return_pct": null, "excess_spy_pct": null, "days_held": null, "replaces": ""}], "curve": [{"d": "2026-09-28", "t": 1000.0, "s": 1000.0}, {"d": "2026-09-29", "t": 1000.0, "s": 998.16}, {"d": "2026-09-30", "t": 1002.54, "s": 996.11}, {"d": "2026-10-01", "t": 1041.21, "s": 997.88}], "stats": {"decisions": 5, "closed": 0, "open": 1, "return_per_trade": null, "min_n": 5}, "rules": {"stop_pct": 0.08, "friction": 0.003, "mode": "virtual"}, "demo": null};
 const $ = id => document.getElementById(id);
 const esc = v => String(v ?? "").replace(/[&<>"']/g, ch => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[ch]));
 const usd = v => "$" + v.toLocaleString("en-US", {minimumFractionDigits: 2, maximumFractionDigits: 2});
