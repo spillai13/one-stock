@@ -3,7 +3,20 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>trader — one stock, every day</title>
+<title>One stock: a public experiment</title>
+<meta name="description" content="A public experiment: rules backed by daily research put 100% into one stock, called at 10am ET before the outcome. Every win and loss stays up.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="one-stock">
+<meta property="og:title" content="Can anyone pick a winning stock in advance? Follow us to find out. One stock, all in, in public.">
+<meta property="og:description" content="A public experiment: one stock, all in, called before the outcome. Every win and loss stays up.">
+<meta property="og:url" content="https://spillai13.github.io/one-stock/">
+<meta property="og:image" content="https://spillai13.github.io/one-stock/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Can anyone pick a winning stock in advance? Follow us to find out. One stock, all in, in public.">
+<meta name="twitter:description" content="A public experiment: one stock, all in, called before the outcome. Every win and loss stays up.">
+<meta name="twitter:image" content="https://spillai13.github.io/one-stock/og.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
@@ -11,7 +24,7 @@
   color-scheme: dark;
   --bg: #0c0d0f; --surface: #15171a; --surface-2: #1c1f23; --line: #2a2e33;
   --ink: #f4f4f2; --ink-2: #b9bab4; --ink-3: #7d7f7a;
-  --trader: #3987e5; --spy: #8b8d88; --good: #1baf7a; --bad: #e66767;
+  --trader: #3987e5; --spy: #8b8d88; --good: #1baf7a; --bad: #e66767; --warn: #d9a33b;
   --radius: 16px;
 }
 @media (prefers-color-scheme: light) {
@@ -19,18 +32,20 @@
     color-scheme: light;
     --bg: #f6f6f3; --surface: #ffffff; --surface-2: #f0efec; --line: #e2e1dc;
     --ink: #0b0b0b; --ink-2: #52514e; --ink-3: #85847f;
-    --trader: #2a78d6; --spy: #85847f; --good: #0f8a5f; --bad: #c83b3a;
+    --trader: #2a78d6; --spy: #85847f; --good: #0f8a5f; --bad: #c83b3a; --warn: #a8761a;
   }
 }
 :root[data-theme="light"] {
   color-scheme: light;
   --bg: #f6f6f3; --surface: #ffffff; --surface-2: #f0efec; --line: #e2e1dc;
   --ink: #0b0b0b; --ink-2: #52514e; --ink-3: #85847f;
-  --trader: #2a78d6; --spy: #85847f; --good: #0f8a5f; --bad: #c83b3a;
+  --trader: #2a78d6; --spy: #85847f; --good: #0f8a5f; --bad: #c83b3a; --warn: #a8761a;
 }
 * { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
 body { margin: 0; background: var(--bg); color: var(--ink);
   font: 16px/1.55 Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+a { color: var(--trader); }
 .wrap { max-width: 1040px; margin: 0 auto; padding: 0 20px; }
 header.top { display: flex; justify-content: space-between; align-items: center; padding: 22px 0; }
 .brand { font-weight: 800; letter-spacing: -0.02em; font-size: 18px; }
@@ -40,20 +55,57 @@ header.top { display: flex; justify-content: space-between; align-items: center;
 .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--good); box-shadow: 0 0 0 0 var(--good);
   animation: pulse 2.2s infinite; }
 @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(27,175,122,.55);} 70% { box-shadow: 0 0 0 10px rgba(27,175,122,0);} 100% { box-shadow: 0 0 0 0 rgba(27,175,122,0);} }
-.hero { padding: 48px 0 28px; }
+.hero { padding: 48px 0 8px; }
 .eyebrow { color: var(--ink-3); font-weight: 600; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; }
-h1 { font-size: clamp(34px, 6vw, 60px); line-height: 1.04; letter-spacing: -0.035em; margin: 12px 0 18px; font-weight: 800; }
+h1 { font-size: clamp(30px, 4.2vw, 46px); white-space: normal; line-height: 1.06; letter-spacing: -0.035em; margin: 12px 0 18px; font-weight: 800; }
 h1 em { font-style: normal; color: var(--trader); }
-.lede { color: var(--ink-2); font-size: 19px; max-width: 640px; margin: 0; }
+.lede { color: var(--ink-2); font-size: 19px; max-width: 660px; margin: 0; }
+.statusline { display: flex; flex-wrap: wrap; gap: 10px 22px; align-items: center; margin: 28px 0 0; padding: 16px 20px; }
+.statusline .now { font-weight: 700; }
+.statusline .early { color: var(--warn); font-weight: 600; }
+.statusline .next { color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.pick { margin: 26px 0 0; font-size: 20px; color: var(--ink-2); }
+.pick b { color: var(--ink); font-size: clamp(24px, 3.4vw, 32px); letter-spacing: -0.02em; display: block; margin-top: 2px; }
+.ctas { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+.btn { display: inline-flex; align-items: center; gap: 8px; border-radius: 999px; padding: 11px 18px; font: 600 15px Inter;
+  cursor: pointer; text-decoration: none; border: 1px solid var(--line); background: var(--surface); color: var(--ink); }
+.btn.primary { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.btn:hover { border-color: var(--ink-3); }
+.btn.sm { padding: 7px 12px; font-size: 13px; }
 .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 24px; }
-.scoreboard { display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 16px; margin: 32px 0 16px; }
+section { padding: 64px 0 0; }
+h2 { font-size: clamp(26px, 3.6vw, 34px); letter-spacing: -0.025em; margin: 0 0 8px; line-height: 1.15; }
+.sub { color: var(--ink-2); margin: 0 0 24px; max-width: 680px; }
+.why { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.why .num { font: 800 44px/1 Inter; letter-spacing: -0.03em; color: var(--trader); margin-bottom: 10px; }
+.why h3 { margin: 0 0 6px; font-size: 18px; letter-spacing: -0.01em; }
+.why p { margin: 0; color: var(--ink-2); font-size: 15px; }
+/* The funnel: each row's bar width is its share of what was tracked. */
+.funnel { display: flex; flex-direction: column; gap: 10px; }
+.frow { display: grid; grid-template-columns: 92px 1fr; gap: 16px; align-items: center; }
+.frow .n { font: 800 34px/1 Inter; letter-spacing: -0.03em; text-align: right; font-variant-numeric: tabular-nums; }
+.frow .bar2 { position: relative; border-radius: 12px; background: var(--surface-2); min-height: 52px; display: flex; align-items: center; overflow: hidden; }
+.frow .bar2 i { position: absolute; inset: 0 auto 0 0; background: color-mix(in srgb, var(--trader) 22%, transparent); border-radius: 12px; }
+.frow .bar2 span { position: relative; padding: 10px 16px; font-size: 15px; }
+.frow .bar2 span small { display: block; color: var(--ink-3); font-size: 13px; }
+.frow.split .bar2 { background: none; gap: 8px; }
+.seg { flex: 1; border-radius: 12px; padding: 10px 14px; background: var(--surface-2); min-height: 52px; }
+.seg b { font: 800 22px/1 Inter; display: block; margin-bottom: 4px; }
+.seg.lose b { color: var(--bad); } .seg.win b { color: var(--good); } .seg.tie b { color: var(--ink-2); }
+.seg small { color: var(--ink-2); font-size: 13px; }
+.frow.final .n { color: var(--trader); }
+.frow.final .bar2 i { background: var(--trader); }
+.frow.final .bar2 { background: color-mix(in srgb, var(--trader) 14%, var(--surface-2)); }
+.frow.final .bar2 span { font-weight: 700; padding-left: 22px; }
+.asof { color: var(--ink-3); font-size: 13px; margin-top: 12px; }
+.scoreboard { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin: 0 0 16px; }
 .stat .k { color: var(--ink-3); font-size: 13px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
-.stat .v { font-size: clamp(34px, 5vw, 54px); font-weight: 800; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; margin-top: 6px; }
+.stat .v { font-size: clamp(30px, 4.4vw, 46px); font-weight: 800; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; margin-top: 6px; }
 .stat .s { color: var(--ink-2); font-size: 14px; margin-top: 4px; }
 .swatch { display: inline-block; width: 14px; height: 3px; border-radius: 2px; vertical-align: middle; margin-right: 8px; }
 .chart-card { padding: 20px 20px 12px; }
 .chart-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
-.legend { display: flex; gap: 18px; color: var(--ink-2); font-size: 14px; }
+.legend { display: flex; gap: 18px; color: var(--ink-2); font-size: 14px; flex-wrap: wrap; }
 svg { display: block; width: 100%; height: auto; overflow: visible; }
 .axis text { fill: var(--ink-3); font: 12px Inter; }
 .grid line { stroke: var(--line); stroke-width: 1; }
@@ -61,13 +113,7 @@ svg { display: block; width: 100%; height: auto; overflow: visible; }
   border-radius: 10px; padding: 10px 12px; font-size: 13px; min-width: 160px; opacity: 0; transition: opacity .12s; }
 .tip b { font-variant-numeric: tabular-nums; }
 .empty { color: var(--ink-2); text-align: center; padding: 8px 0 18px; font-size: 15px; }
-section { padding: 56px 0 0; }
-h2 { font-size: 28px; letter-spacing: -0.02em; margin: 0 0 8px; }
-.sub { color: var(--ink-2); margin: 0 0 24px; max-width: 680px; }
-.steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
-.step .n { font: 600 13px JetBrains Mono, monospace; color: var(--trader); }
-.step h3 { margin: 10px 0 6px; font-size: 17px; letter-spacing: -0.01em; }
-.step p { margin: 0; color: var(--ink-2); font-size: 14.5px; }
+h3.minor { font-size: 20px; letter-spacing: -0.015em; margin: 40px 0 6px; }
 .chips { display: flex; flex-wrap: wrap; gap: 8px; }
 .chip { font: 600 14px JetBrains Mono, monospace; padding: 8px 12px; border-radius: 10px; background: var(--surface-2);
   border: 1px solid var(--line); }
@@ -78,9 +124,17 @@ th { text-align: left; color: var(--ink-3); font-weight: 600; font-size: 12px; l
 td { padding: 12px; border-bottom: 1px solid var(--line); font-variant-numeric: tabular-nums; }
 td.num { text-align: right; } th.num { text-align: right; }
 .up { color: var(--good); } .down { color: var(--bad); }
-.rules { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.rules { display: grid; grid-template-columns: 1.4fr 1fr 1fr; gap: 14px; }
 .rule .big { font-size: 28px; font-weight: 800; letter-spacing: -0.02em; }
-.rule p { margin: 4px 0 0; color: var(--ink-2); font-size: 14px; }
+.rule p { margin: 6px 0 0; color: var(--ink-2); font-size: 14.5px; }
+.rule .warnline { color: var(--warn); font-weight: 600; }
+.share-band { margin-top: 64px; text-align: center; padding: 40px 24px; }
+.share-band h2 { margin-bottom: 6px; }
+.share-band .sub { margin: 0 auto 22px; }
+.share-band .ctas { justify-content: center; }
+.toast { position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%) translateY(20px); background: var(--ink); color: var(--bg);
+  padding: 10px 16px; border-radius: 999px; font: 600 14px Inter; opacity: 0; transition: all .2s; pointer-events: none; }
+.toast.on { opacity: 1; transform: translateX(-50%) translateY(0); }
 footer { color: var(--ink-3); font-size: 13.5px; padding: 64px 0 48px; }
 footer ul { padding-left: 18px; margin: 10px 0 0; } footer li { margin: 4px 0; }
 .toggle { background: none; border: 1px solid var(--line); color: var(--ink-2); border-radius: 999px; padding: 6px 12px; cursor: pointer; font: 500 13px Inter; }
@@ -89,11 +143,13 @@ footer ul { padding-left: 18px; margin: 10px 0 0; } footer li { margin: 4px 0; }
 .play:disabled { opacity: .35; cursor: default; }
 .playhead { font: 600 13px JetBrains Mono, monospace; color: var(--ink-2); min-width: 64px; }
 .cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
-.tcard { display: flex; flex-direction: column; gap: 14px; }
+.tcard { display: flex; flex-direction: column; gap: 14px; scroll-margin-top: 20px; }
+.tcard:target { border-color: var(--trader); }
 .tcard .top { display: flex; justify-content: space-between; align-items: baseline; }
 .tcard .tk { font: 800 30px/1 Inter; letter-spacing: -0.03em; }
 .tcard .ret { font: 800 26px/1 Inter; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
 .tcard .when { color: var(--ink-3); font-size: 13px; margin-top: 6px; }
+.tcard .foot { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
 .knew { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
 .knew div { background: var(--surface-2); border-radius: 10px; padding: 10px; }
 .knew .k { color: var(--ink-3); font-size: 11.5px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; }
@@ -103,8 +159,11 @@ footer ul { padding-left: 18px; margin: 10px 0 0; } footer li { margin: 4px 0; }
 .bar b { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--ink); }
 .muted { color: var(--ink-3); font-size: 13px; }
 @media (max-width: 760px) {
-  .cards { grid-template-columns: 1fr; }
-  .scoreboard, .steps, .rules { grid-template-columns: 1fr; }
+  .wrap { padding: 0 16px; }
+  .cards, .why, .scoreboard, .rules { grid-template-columns: 1fr; }
+  .frow { grid-template-columns: 64px 1fr; gap: 10px; }
+  .frow .n { font-size: 26px; }
+  .frow.split .bar2 { flex-direction: column; align-items: stretch; }
   .hide-sm { display: none; }
 }
 </style>
@@ -113,138 +172,166 @@ footer ul { padding-left: 18px; margin: 10px 0 0; } footer li { margin: 4px 0; }
 <div class="wrap">
   <div id="demo-banner" class="card" style="display:none; margin-top:18px; border-color:var(--trader)"></div>
   <header class="top">
-    <div class="brand">trader<span>.</span></div>
+    <div class="brand">one-stock<span>.</span></div>
     <div style="display:flex; gap:10px; align-items:center">
       <span class="pill"><span class="dot"></span><span id="status">Live</span></span>
       <button class="toggle" id="theme" aria-label="Toggle theme">◐</button>
     </div>
   </header>
 
+  <!-- 1. The idea, in five seconds -->
   <div class="hero">
-    <div class="eyebrow" id="eyebrow"></div>
-    <h1 id="headline">One stock. Every morning.<br><em>Written down before the outcome.</em></h1>
-    <p class="lede">A machine reads which trading strategies have statistically beaten the market,
-      picks the single stock they're buying with the best evidence behind it, and writes the call
-      down at 10am ET — permanently. Then the market grades it.</p>
-  </div>
-
-  <div class="scoreboard">
-    <div class="card stat">
-      <div class="k"><span class="swatch" style="background:var(--trader)"></span>$1,000 in trader</div>
-      <div class="v" id="v-trader">$1,000</div>
-      <div class="s" id="s-trader"></div>
-    </div>
-    <div class="card stat">
-      <div class="k"><span class="swatch" style="background:var(--spy)"></span>$1,000 in the S&amp;P 500</div>
-      <div class="v" id="v-spy">$1,000</div>
-      <div class="s" id="s-spy"></div>
-    </div>
-    <div class="card stat">
-      <div class="k">Record</div>
-      <div class="v" id="v-days">0</div>
-      <div class="s" id="s-days"></div>
+    <div class="eyebrow" id="eyebrow">A public experiment</div>
+    <h1 id="headline">Can anyone pick a winning stock in advance?<br><em>Follow us to find out. One stock, all in, in public.</em></h1>
+    <p class="lede" id="lede">Behind the scenes, a research system does the hard work,
+      testing trading ideas against the market every day. Its rules then back one stock
+      with conviction, putting in 100% of the money, as the best shot at the most growth in the least time.</p>
+    <div class="pick" id="pick"></div>
+    <div class="ctas">
+      <button class="btn primary" data-share="page">Share the experiment</button>
+      <a class="btn" href="#record">Today's call ↓</a>
+      <a class="btn" href="#how">How a stock gets picked ↓</a>
     </div>
   </div>
 
-  <div class="card chart-card" style="position:relative">
-    <div class="chart-head">
-      <div class="eyebrow"><span id="curve-label">Growth of $1,000 — live since</span> <span id="since"></span></div>
-      <div class="legend" style="align-items:center">
-        <button class="play" id="play">▶ Play the record</button><span class="playhead" id="playhead"></span>
-        <span><span class="swatch" style="background:var(--trader)"></span>trader</span>
-        <span><span class="swatch" style="background:var(--spy)"></span>S&amp;P 500 (SPY)</span>
+  <!-- 2. The record, exactly as it stands -->
+  <section id="record">
+    <h2>The record so far</h2>
+    <div class="card statusline">
+      <span class="now" id="st-now"></span>
+      <span class="early" id="st-early"></span>
+      <span class="next" id="st-next"></span>
+    </div>
+    <div class="scoreboard" style="margin-top:16px">
+      <div class="card stat">
+        <div class="k"><span class="swatch" style="background:var(--trader)"></span>$1,000 following the calls</div>
+        <div class="v" id="v-trader">$1,000</div>
+        <div class="s" id="s-trader"></div>
+      </div>
+      <div class="card stat">
+        <div class="k"><span class="swatch" style="background:var(--spy)"></span>$1,000 in the S&amp;P 500</div>
+        <div class="v" id="v-spy">$1,000</div>
+        <div class="s" id="s-spy"></div>
+      </div>
+      <div class="card stat">
+        <div class="k">Trades finished</div>
+        <div class="v" id="v-days">0</div>
+        <div class="s" id="s-days"></div>
       </div>
     </div>
-    <svg id="chart" role="img" aria-label="Growth of $1,000: trader vs SPY"></svg>
-    <div class="empty" id="empty"></div>
-    <div class="tip" id="tip"></div>
-  </div>
 
-  <section>
-    <h2>How it works</h2>
-    <p class="sub">No gut feel, no AI choosing stocks, no editing afterwards. Four steps, the same every morning.</p>
-    <div class="steps">
-      <div class="card step"><div class="n">01</div><h3>Find what's proven</h3>
-        <p>A research system tests trading strategies against the S&amp;P 500. Only the ones whose win over the market is statistically significant make the shortlist.</p></div>
-      <div class="card step"><div class="n">02</div><h3>See what they're buying</h3>
-        <p>Of the stocks those proven strategies are buying today, drop anything illiquid, too volatile, or near earnings.</p></div>
-      <div class="card step"><div class="n">03</div><h3>Pick one</h3>
-        <p>Same evidence, same edge — so pick the calmest name: least chance of being shaken out by noise. Hold it until something clearly better comes along.</p></div>
-      <div class="card step"><div class="n">04</div><h3>Write it down, forever</h3>
-        <p>Every call is committed to an append-only, timestamped log at 10am ET. Wins, losses, and cash days stay on the record.</p></div>
+    <div class="card chart-card" style="position:relative">
+      <div class="chart-head">
+        <div class="eyebrow"><span id="curve-label">Growth of $1,000 since</span> <span id="since"></span></div>
+        <div class="legend" style="align-items:center">
+          <button class="play" id="play">▶ Play the record</button><span class="playhead" id="playhead"></span>
+          <span><span class="swatch" style="background:var(--trader)"></span>one-stock</span>
+          <span><span class="swatch" style="background:var(--spy)"></span>S&amp;P 500</span>
+        </div>
+      </div>
+      <svg id="chart" role="img" aria-label="Growth of $1,000: one-stock vs the S&P 500"></svg>
+      <div class="empty" id="empty"></div>
+      <div class="tip" id="tip"></div>
     </div>
-  </section>
 
-  <section>
-    <h2>Why only one?</h2>
-    <p class="sub">Most portfolios hold dozens of stocks. That's insurance against not knowing which one is best.
-      Finding the best one is this engine's entire job — so once it has, it puts everything there.</p>
-    <div class="steps">
-      <div class="card step"><h3>Your best idea, undiluted</h3>
-        <p>If one stock has the strongest evidence behind it today, the second- through tenth-best only pull the average down. Spreading money out buys comfort, not return.</p></div>
-      <div class="card step"><h3>Speed counts</h3>
-        <p>The goal is the most growth in the least time: 10% in 5 days beats 10% in 10. Money parked in slower names is money not compounding.</p></div>
-      <div class="card step"><h3>Nowhere to hide</h3>
-        <p>A basket can bury a bad call. One stock can't — every pick is plainly right or wrong, which is what makes this record worth reading.</p></div>
-      <div class="card step"><h3>The price, paid openly</h3>
-        <p>One stock swings harder than twenty. So every position has a stop set before it's bought, and when nothing clears the bar, the answer is cash.</p></div>
-    </div>
-  </section>
-
-  <section>
-    <h2>Today's shortlist</h2>
-    <p class="sub" id="shortlist-sub"></p>
-    <div class="chips" id="shortlist"></div>
-  </section>
-
-  <section>
-    <h2 id="cards-title">Each call, as it was made</h2>
-    <p class="sub" id="cards-sub">What the engine knew at 10:00 that morning — and what happened next.</p>
+    <h3 class="minor" id="cards-title">Each call, as it was made</h3>
+    <p class="sub" id="cards-sub">The stock, the price it sells at to cut a loss, the price it's aiming for. All set before the outcome.</p>
     <div class="cards" id="cards"></div>
-  </section>
 
-  <section>
-    <h2>Every trade</h2>
-    <p class="sub">All of them. Stops, switches and losses included.</p>
+    <h3 class="minor">Every trade</h3>
+    <p class="sub">All of them. Losses, cut-offs and switches included.</p>
     <div class="card" style="padding:4px 8px; overflow-x:auto">
       <table>
-        <thead><tr><th>Called</th><th>Stock</th><th class="num">Bought</th><th class="num hide-sm">Stop</th>
-          <th class="num hide-sm">Target</th><th>Ended</th><th class="num">Return</th></tr></thead>
+        <thead><tr><th>Called</th><th>Stock</th><th class="num">Bought at</th><th class="num hide-sm">Sell if it falls to</th>
+          <th class="num hide-sm">Aiming for</th><th>Ended</th><th class="num">Result</th></tr></thead>
         <tbody id="ledger"></tbody>
       </table>
     </div>
   </section>
 
-  <section>
-    <h2>The rules it can't break</h2>
-    <div class="rules">
-      <div class="card rule"><div class="big">1 stock</div><p>All in, never spread thin. To buy something new, it sells everything first.</p></div>
-      <div class="card rule"><div class="big" id="r-stop"></div><p>Stop on every position, fixed in advance. Hit it and it's out.</p></div>
-      <div class="card rule"><div class="big">0 edits</div><p>A call is never changed once made; outcomes are only ever appended.</p></div>
+  <!-- 3. Why a public experiment -->
+  <section id="why">
+    <h2>Why a public experiment</h2>
+    <p class="sub">Anyone can explain yesterday's winners. The only honest test is calling them first and showing every result.</p>
+    <div class="why">
+      <div class="card"><div class="num" id="w-lose">6 of 8</div><h3>Hindsight makes it look easy</h3>
+        <p id="w-lose-p">Look back at any chart and the winners are obvious. Looking forward, almost nobody can tell. Most strategies that look smart on paper do worse than simply buying the whole market.</p></div>
+      <div class="card"><div class="num">100%</div><h3>Conviction means all in</h3>
+        <p>When the rules find their best bet, they don't spread the money across twenty stocks. All of it goes into the one with the best shot at the most growth in the least time. If a better one shows up, they sell and switch.</p></div>
+      <div class="card"><div class="num">0</div><h3>Out in the open</h3>
+        <p>Every call is written down at 10am ET, before the outcome, and never edited. Wins and losses stay up side by side. Zero edits, ever.</p></div>
     </div>
   </section>
 
+  <!-- 4. How: simple on top, the experimentation underneath -->
+  <section id="how">
+    <h2>How one stock gets picked</h2>
+    <p class="sub">Behind the scenes, a research system keeps testing trading ideas against the S&amp;P 500. Most don't survive. Here's the funnel, from the latest numbers.</p>
+    <div class="card">
+      <div class="funnel" id="funnel"></div>
+      <div class="asof" id="funnel-asof"></div>
+    </div>
+  </section>
+
+  <section id="shortlist-section">
+    <h2>Today's shortlist</h2>
+    <p class="sub" id="shortlist-sub"></p>
+    <div class="chips" id="shortlist"></div>
+  </section>
+
+  <!-- 5. Rules -->
+  <section id="rules">
+    <h2>The rules it can't break</h2>
+    <div class="rules">
+      <div class="card rule"><div class="big">1 stock</div>
+        <p>All in on the best bet, never spread thin. To buy something new, it sells everything first.</p>
+        <p class="warnline">One stock swings harder than many. This is an experiment. Don't copy it with money you need.</p></div>
+      <div class="card rule"><div class="big" id="r-stop"></div><p>The price it sells at to cut a loss is set before it buys. Hit it, and it's out. No hoping.</p></div>
+      <div class="card rule"><div class="big">0 edits</div><p>A call is never changed once made. Results are only ever added, never rewritten.</p></div>
+    </div>
+  </section>
+
+  <!-- Share band -->
+  <div class="card share-band" id="follow">
+    <h2>Watch it play out</h2>
+    <p class="sub">Send this to someone who'd want to see whether the hard work beats hindsight, one call at a time.</p>
+    <div class="ctas">
+      <button class="btn primary" data-share="whatsapp">WhatsApp</button>
+      <button class="btn" data-share="x">Post on X</button>
+      <button class="btn" data-share="threads">Threads</button>
+      <button class="btn" data-share="copy">Copy link</button>
+    </div>
+    <p class="muted" id="follow-note" style="margin-top:18px"></p>
+  </div>
+
   <footer>
-    <div class="eyebrow">The fine print, in full</div>
+    <div class="eyebrow">The fine print, in plain words</div>
     <ul>
-      <li>Trades are virtual: bought and sold at the day's closing price, by rule. No real money, no real fills.</li>
-      <li>Returns are gross of trading costs (roughly <span id="f-friction"></span> per round trip).</li>
-      <li>Averages carry a 90% confidence interval; with fewer than <span id="f-min"></span> closed trades the page says so instead of guessing.</li>
-      <li>The shortlist comes from a research system's statistically certified strategies. A longer "as if we'd started in July" replay will appear here, drawn dashed and labelled as a reconstruction, once that system publishes its certification history.</li>
-      <li>The record restarted on Sep 26, 2026 with this engine. Calls from an earlier, retired engine (Sep 2–25) were removed from the record then; they remain, unedited, in the project's private history.</li>
+      <li>No real money is involved yet. Trades are pretend: bought and sold at the day's closing price, by the rules.</li>
+      <li>Results don't include trading costs, which would take roughly <span id="f-friction"></span> off each buy-and-sell.</li>
+      <li>Until at least <span id="f-min"></span> trades have finished, the page says "too early to tell" instead of guessing. Averages come with a range showing how sure the result is.</li>
+      <li>The research counts are re-checked every day and change; the date they're from is shown next to them. "Ideas tracked" means the ideas the research system follows now, not every idea it has ever tried.</li>
+      <li>"Beat the market" means: in past trades, by more than luck usually explains, on a strict statistical test. The past doesn't promise the future. That's what this experiment checks.</li>
+      <li>The record restarted on Sep 26, 2026 with this engine. Calls from an earlier, retired engine (Sep 2–25) were taken off the record then; they remain, unedited, in the project's private history.</li>
+      <li>This is not investment advice.</li>
       <li id="f-link"></li>
-      <li>Every number on this page is generated from the committed record. Built <span id="built"></span>.</li>
+      <li>Every number on this page comes from the record as written. Built <span id="built"></span>.</li>
     </ul>
   </footer>
 </div>
+<div class="toast" id="toast"></div>
 
 <script>
-const DATA = {"built": "2026-10-04", "era_start": "2026-09-26", "first_pick": "2026-09-03", "trades": [{"date": "2026-09-08", "ticker": "FRSH", "name": "Freshworks Inc.", "fill_date": "2026-09-08", "fill": 12.1, "stop": 11.13, "target": 13.31, "d_eff": 14.6, "exit_date": "2026-09-23", "exit": 11.89, "exit_reason": "switch", "exit_price_date": "2026-09-11", "return_pct": -1.736, "excess_spy_pct": -1.977, "days_held": 11.0, "replaces": ""}, {"date": "2026-09-23", "ticker": "DOCS", "name": "Doximity, Inc.", "fill_date": "2026-09-23", "fill": 26.57, "stop": 24.44, "target": 31.35, "d_eff": 17.3, "exit_date": "2026-10-01", "exit": 28.5, "exit_reason": "switch", "exit_price_date": "2026-10-01", "return_pct": 7.264, "excess_spy_pct": 7.761, "days_held": 6.0, "replaces": "FRSH"}, {"date": "2026-10-01", "ticker": "DOCU", "name": "DocuSign, Inc.", "fill_date": "2026-10-01", "fill": 69.74, "stop": 64.16, "target": 76.71, "d_eff": 12.4, "exit_date": null, "exit": null, "exit_reason": null, "exit_price_date": null, "return_pct": null, "excess_spy_pct": null, "days_held": null, "replaces": "DOCS"}], "curve": [{"d": "2026-09-03", "t": 1000.0, "s": 1000.0}, {"d": "2026-09-04", "t": 1000.0, "s": 996.15}, {"d": "2026-09-08", "t": 1000.0, "s": 990.67}, {"d": "2026-09-09", "t": 985.95, "s": 986.07}, {"d": "2026-09-10", "t": 980.99, "s": 980.16}, {"d": "2026-09-11", "t": 982.64, "s": 988.51}, {"d": "2026-09-14", "t": 982.64, "s": 984.1}, {"d": "2026-09-15", "t": 982.64, "s": 979.59}, {"d": "2026-09-16", "t": 982.64, "s": 975.27}, {"d": "2026-09-17", "t": 982.64, "s": 986.33}, {"d": "2026-09-21", "t": 982.64, "s": 1000.43}, {"d": "2026-09-22", "t": 982.64, "s": 1000.27}, {"d": "2026-09-23", "t": 982.64, "s": 993.07}, {"d": "2026-09-24", "t": 963.04, "s": 992.25}, {"d": "2026-09-25", "t": 974.51, "s": 997.65}, {"d": "2026-09-28", "t": 968.96, "s": 990.22}, {"d": "2026-09-29", "t": 980.8, "s": 988.4}, {"d": "2026-09-30", "t": 1048.1, "s": 986.37}, {"d": "2026-10-01", "t": 1054.02, "s": 988.13}], "stats": {"decisions": 21, "closed": 2, "open": 1, "return_per_trade": null, "min_n": 5}, "rules": {"stop_pct": 0.08, "friction": 0.003, "mode": "virtual"}, "demo": {"start": "2026-09-03", "end": "2026-10-02", "accepted": "company name, sector, industry and market cap are today's values (the table keeps no history); a market-cap move across the $300M floor, an industry reclassification, or an earnings date reported after the replayed morning could differ from what was known then", "gaps": [{"ticker": "FRSH", "price_date": "2026-09-11", "exit_date": "2026-09-23"}]}};
+const DATA = {"built": "2026-10-04", "era_start": "2026-09-26", "first_pick": "2026-09-03", "trades": [{"date": "2026-09-08", "ticker": "FRSH", "name": "Freshworks Inc.", "fill_date": "2026-09-08", "fill": 12.1, "stop": 11.13, "target": 13.31, "d_eff": 14.6, "exit_date": "2026-09-23", "exit": 11.89, "exit_reason": "switch", "exit_price_date": "2026-09-11", "return_pct": -1.736, "excess_spy_pct": -1.977, "days_held": 11.0, "replaces": ""}, {"date": "2026-09-23", "ticker": "DOCS", "name": "Doximity, Inc.", "fill_date": "2026-09-23", "fill": 26.57, "stop": 24.44, "target": 31.35, "d_eff": 17.3, "exit_date": "2026-10-01", "exit": 28.5, "exit_reason": "switch", "exit_price_date": "2026-10-01", "return_pct": 7.264, "excess_spy_pct": 7.761, "days_held": 6.0, "replaces": "FRSH"}, {"date": "2026-10-01", "ticker": "DOCU", "name": "DocuSign, Inc.", "fill_date": "2026-10-01", "fill": 69.74, "stop": 64.16, "target": 76.71, "d_eff": 12.4, "exit_date": null, "exit": null, "exit_reason": null, "exit_price_date": null, "return_pct": null, "excess_spy_pct": null, "days_held": null, "replaces": "DOCS"}], "curve": [{"d": "2026-09-03", "t": 1000.0, "s": 1000.0}, {"d": "2026-09-04", "t": 1000.0, "s": 996.15}, {"d": "2026-09-08", "t": 1000.0, "s": 990.67}, {"d": "2026-09-09", "t": 985.95, "s": 986.07}, {"d": "2026-09-10", "t": 980.99, "s": 980.16}, {"d": "2026-09-11", "t": 982.64, "s": 988.51}, {"d": "2026-09-14", "t": 982.64, "s": 984.1}, {"d": "2026-09-15", "t": 982.64, "s": 979.59}, {"d": "2026-09-16", "t": 982.64, "s": 975.27}, {"d": "2026-09-17", "t": 982.64, "s": 986.33}, {"d": "2026-09-21", "t": 982.64, "s": 1000.43}, {"d": "2026-09-22", "t": 982.64, "s": 1000.27}, {"d": "2026-09-23", "t": 982.64, "s": 993.07}, {"d": "2026-09-24", "t": 963.04, "s": 992.25}, {"d": "2026-09-25", "t": 974.51, "s": 997.65}, {"d": "2026-09-28", "t": 968.96, "s": 990.22}, {"d": "2026-09-29", "t": 980.8, "s": 988.4}, {"d": "2026-09-30", "t": 1048.1, "s": 986.37}, {"d": "2026-10-01", "t": 1054.02, "s": 988.13}], "stats": {"decisions": 21, "closed": 2, "open": 1, "return_per_trade": null, "min_n": 5}, "rules": {"stop_pct": 0.08, "friction": 0.003, "mode": "virtual"}, "demo": {"start": "2026-09-03", "end": "2026-10-02", "accepted": "company name, sector, industry and market cap are today's values (the table keeps no history); a market-cap move across the $300M floor, an industry reclassification, or an earnings date reported after the replayed morning could differ from what was known then", "gaps": [{"ticker": "FRSH", "price_date": "2026-09-11", "exit_date": "2026-09-23"}]}, "research": {"as_of": "2026-10-02", "tracked": 57, "set_aside": 49, "judged": 8, "beats": 1, "loses": 6, "unclear": 1}, "calls_ahead": ["2026-10-05T10:00:00-04:00", "2026-10-06T10:00:00-04:00", "2026-10-07T10:00:00-04:00", "2026-10-08T10:00:00-04:00", "2026-10-09T10:00:00-04:00", "2026-10-12T10:00:00-04:00"]};
 const $ = id => document.getElementById(id);
 const esc = v => String(v ?? "").replace(/[&<>"']/g, ch => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[ch]));
 const usd = v => "$" + v.toLocaleString("en-US", {minimumFractionDigits: 2, maximumFractionDigits: 2});
 const pct = v => (v >= 0 ? "+" : "") + v.toFixed(2) + "%";
 const fmtDate = s => new Date(s + "T12:00:00").toLocaleDateString("en-US", {month: "short", day: "numeric"});
+const SITE = "https://spillai13.github.io/one-stock/";
+// Daily-call accounts. Empty until the poster is live; the page says "starting soon" meanwhile.
+const FOLLOW = {x: "", threads: ""};
+const SHARE_LINE = "Can anyone pick a winning stock in advance? This public experiment is trying: one stock, all in, every result shown.";
 
 (function theme() {
   const root = document.documentElement;
@@ -259,31 +346,97 @@ const fmtDate = s => new Date(s + "T12:00:00").toLocaleDateString("en-US", {mont
 })();
 
 const DEMO = DATA.demo || null;
+const MIN_N = DATA.stats.min_n;
+const EARLY = DATA.stats.closed < MIN_N;
 
 function demoMode() {
   if (!DEMO) {
-    $("f-link").innerHTML = `Want to see it run? <a href="demo.html" style="color:var(--trader)">The demo replays this engine on past data</a>.`;
+    $("f-link").innerHTML = `Want to see it run? <a href="demo.html">Watch a replay on past data</a> (reconstructed, not live).`;
     return;
   }
-  document.title = "trader — demo on historic data";
+  document.title = "One stock: replay on past data";
   const b = $("demo-banner");
   b.style.display = "block";
-  b.innerHTML = `<div class="eyebrow" style="color:var(--trader)">Demo · replayed on historic data</div>
-    <p style="margin:8px 0 0">This is <b>not</b> the live record. The same engine was run as of 07:00 ET on each past
-    morning from ${fmtDate(DEMO.start)} to ${fmtDate(DEMO.end)}, seeing only what had been published by then — the
-    certifications from the evening before, prices up to the previous close. Nothing here was called in advance,
-    and the line is drawn dashed for that reason. <a href="index.html" style="color:var(--trader)">The live record is here.</a></p>`;
-  $("headline").innerHTML = "One stock. Every morning.<br><em>Replayed on what it knew then.</em>";
-  $("curve-label").textContent = "Growth of $1,000 — replayed from";
+  b.innerHTML = `<div class="eyebrow" style="color:var(--trader)">Replay · reconstructed on past data</div>
+    <p style="margin:8px 0 0">This is <b>not</b> the live record. The same rules were run as of 07:00 ET on each past
+    morning from ${fmtDate(DEMO.start)} to ${fmtDate(DEMO.end)}, seeing only what was known by then: the
+    research results from the evening before, prices up to the previous close. Nothing here was called in advance,
+    and the line is drawn dashed for that reason. <a href="index.html">The live record is here.</a></p>`;
+  $("headline").innerHTML = "Can anyone pick a winning stock in advance?<br><em>Here's how these rules would have done.</em>";
+  $("curve-label").textContent = "Growth of $1,000, replayed from";
   $("cards-title").textContent = "Each call, as the replay made it";
-  $("cards-sub").textContent = "What the engine could see at 10:00 on each past morning — and what happened next.";
-  document.querySelectorAll("section").forEach(sec => { if (sec.querySelector("#shortlist")) sec.style.display = "none"; });
+  $("cards-sub").textContent = "What the rules could see at 10:00 on each past morning, and what happened next.";
   const extra = [
-    `Replayed, not live: every call on this page was reconstructed by running today's engine on past mornings.`,
+    `Replayed, not live: every call on this page was reconstructed by running today's rules on past mornings.`,
     `Accepted look-ahead: ${esc(DEMO.accepted)}.`,
-    ...(DEMO.gaps || []).map(g => `${esc(g.ticker)}: the price feed stopped after ${fmtDate(g.price_date)}; its exit on ${fmtDate(g.exit_date)} is priced at that last observed close, and a stop or target touched inside the gap cannot be known.`),
+    ...(DEMO.gaps || []).map(g => `${esc(g.ticker)}: the price feed stopped after ${fmtDate(g.price_date)}; its exit on ${fmtDate(g.exit_date)} is priced at that last observed close, and a cut-off or target touched inside the gap cannot be known.`),
   ];
   $("f-link").innerHTML = extra.join("</li><li>");  // every interpolated value above is esc()-ed
+}
+
+function held() {
+  return DATA.trades.slice().reverse().find(t => !t.exit_date) || null;
+}
+
+function hero() {
+  const h = held();
+  const days = DATA.stats.decisions;
+  $("eyebrow").textContent = DEMO ? `Replay · ${days} past trading days`
+    : DATA.first_pick ? `A public experiment · Day ${days}` : "A public experiment · Day 0";
+  $("status").textContent = DEMO ? "Replay" : DATA.first_pick ? "Live" : "Starting";
+  $("st-now").textContent = h
+    ? `${DEMO ? "Ended holding" : "Holding"} ${h.name || h.ticker}${h.name ? " (" + h.ticker + ")" : ""} since ${fmtDate(h.fill_date || h.date)}`
+    : DATA.first_pick ? "In cash: nothing cleared the bar" : "First call: next trading morning, 10am ET";
+  $("st-early").textContent = EARLY
+    ? `Too early to tell if this works: ${DATA.stats.closed} of ${MIN_N} trades finished`
+    : `${DATA.stats.closed} trades finished`;
+  $("pick").innerHTML = h
+    ? `${DEMO ? "Where the replay ended" : "Today's pick, 100% in"}<b>${esc(h.name || h.ticker)}${h.name ? " (" + esc(h.ticker) + ")" : ""}</b>`
+    : DATA.first_pick ? `Today's pick<b>Cash: nothing cleared the bar</b>` : "";
+  if (!DEMO) countdown();
+}
+
+// Next 10:00 ET call, from the trading calendar the build passed in.
+function countdown() {
+  const ahead = DATA.calls_ahead || [];
+  const tick = () => {
+    const now = Date.now();
+    // Each entry is a 10:00 New York time stamp with its own offset, so daylight saving is handled at build.
+    const next = ahead.map(a => ({d: a.slice(0, 10), t: Date.parse(a)})).find(x => x.t > now);
+    if (!next) { $("st-next").textContent = ""; return; }
+    const s = Math.max(0, Math.floor((next.t - now) / 1000));
+    const hh = Math.floor(s / 3600), mm = Math.floor(s % 3600 / 60);
+    const day = new Date(next.d + "T12:00:00").toLocaleDateString("en-US", {weekday: "short", month: "short", day: "numeric"});
+    $("st-next").textContent = `Next call in ${hh}h ${String(mm).padStart(2, "0")}m · ${day}, 10am ET`;
+  };
+  tick(); setInterval(tick, 30000);
+}
+
+function why() {
+  const r = DATA.research;
+  if (!r) return;
+  $("w-lose").textContent = `${r.loses} of ${r.judged}`;
+  $("w-lose-p").textContent = `Look back at any chart and the winners are obvious. Looking forward, almost nobody can tell: of the ${r.judged} ideas the research had enough data to judge, ${r.loses} did reliably worse than simply buying the whole market.`;
+}
+
+function funnel() {
+  const r = DATA.research;
+  if (!r) { document.querySelector("#how .card").style.display = "none"; return; }
+  const w = n => Math.max(6, Math.round(n / r.tracked * 100));
+  const row = (n, label, small, width, cls = "") => `<div class="frow ${cls}"><div class="n">${n}</div>
+    <div class="bar2"><i style="width:${width}%"></i><span>${label}${small ? `<small>${small}</small>` : ""}</span></div></div>`;
+  $("funnel").innerHTML = [
+    row(r.tracked, "trading ideas being tracked", "Strategies, themes and rules the research system follows", 100),
+    row(r.set_aside, "set aside", "Not enough independent trades yet to judge fairly", w(r.set_aside)),
+    row(r.judged, "put to a strict test against the S&amp;P 500", "", w(r.judged)),
+    `<div class="frow split"><div class="n"></div><div class="bar2">
+      <div class="seg lose"><b>${r.loses}</b><small>reliably lose to the market</small></div>
+      <div class="seg tie"><b>${r.unclear}</b><small>too close to call</small></div>
+      <div class="seg win"><b>${r.beats}</b><small>beat${r.beats === 1 ? "s" : ""} it</small></div></div></div>`,
+    row("→", "the stocks it's buying today", "Minus anything hard to trade, too jumpy, or reporting earnings soon", 12),
+    row(1, "the calmest of them, held until the rules say sell", "", 4, "final"),
+  ].join("");
+  $("funnel-asof").textContent = `Counts as of ${fmtDate(r.as_of)}. The research is re-run every trading day, and its methods keep evolving, so these numbers change.`;
 }
 
 function scoreboard() {
@@ -292,13 +445,9 @@ function scoreboard() {
   countUp($("v-trader"), t); countUp($("v-spy"), s);
   $("s-trader").textContent = last ? pct((t / 1000 - 1) * 100) + " since " + fmtDate(c[0].d) : "Starts with the first call";
   $("s-spy").textContent = last ? pct((s / 1000 - 1) * 100) + " over the same days" : "Same start, same days";
-  $("v-days").textContent = DATA.stats.decisions;
-  $("s-days").textContent = DEMO ? "replayed trading days"
-    : DATA.stats.decisions === 1 ? "daily decision on record" : "daily decisions on record";
+  $("v-days").textContent = `${DATA.stats.closed} of ${MIN_N}`;
+  $("s-days").textContent = EARLY ? `needed before any verdict · ${DATA.stats.open} open now` : `${DATA.stats.open} open now`;
   $("since").textContent = DATA.first_pick ? fmtDate(DATA.first_pick) : "the first call";
-  $("eyebrow").textContent = DEMO ? "Demo · " + DATA.stats.decisions + " replayed trading days"
-    : DATA.first_pick ? "Live record · " + DATA.stats.decisions + " trading days" : "Day 0 · the record starts Monday";
-  $("status").textContent = DEMO ? "Demo" : DATA.first_pick ? "Live" : "Starting";
 }
 
 function countUp(el, to) {
@@ -315,15 +464,15 @@ let playing = null;
 
 function draw(upto) {
   const svg = $("chart"), c = DATA.curve;
-  const W = Math.max(320, svg.parentElement.clientWidth - 40), H = W < 600 ? 240 : 340;
+  const W = Math.max(300, svg.parentElement.clientWidth - 40), H = W < 600 ? 240 : 340;
   const P = {l: 58, r: W < 600 ? 62 : 78, t: 16, b: 30};
   svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
   svg.innerHTML = "";
   $("play").disabled = c.length < 2;
   if (c.length < 2) {
     $("empty").textContent = DATA.first_pick
-      ? "One point so far — the line draws itself from the second trading day."
-      : "The first call is made Monday at 10:00 ET. This chart starts at $1,000 and grows — or doesn't — from there.";
+      ? "One point so far. The line draws itself from the second trading day."
+      : "The first call is made the next trading morning at 10am ET. This chart starts at $1,000 and grows (or doesn't) from there.";
     const y = H / 2;
     svg.insertAdjacentHTML("beforeend",
       `<line x1="${P.l}" x2="${W - P.r}" y1="${y}" y2="${y}" stroke="var(--line)"/>
@@ -353,7 +502,6 @@ function draw(upto) {
   svg.insertAdjacentHTML("beforeend",
     `<path d="${path("s")}" fill="none" stroke="var(--spy)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
      <path id="tpath" d="${path("t")}" fill="none" stroke="var(--trader)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"${DEMO ? ' stroke-dasharray="7 5"' : ""}/>`);
-  // Buy / sell markers where the record says a position filled or exited.
   const idx = d => c.findIndex(p => p.d === d);
   const marks = [];
   DATA.trades.forEach(t => {
@@ -379,10 +527,10 @@ function draw(upto) {
     const r = svg.getBoundingClientRect(), px = (e.clientX - r.left) * W / r.width;
     const i = Math.max(0, Math.min(n, Math.round((px - P.l) / (W - P.l - P.r) * (c.length - 1))));
     xh.setAttribute("x1", x(i)); xh.setAttribute("x2", x(i)); xh.setAttribute("opacity", 1);
-    const held = DATA.trades.find(t => t.fill_date && t.fill_date <= c[i].d && (!t.exit_date || t.exit_date > c[i].d));
-    tip.innerHTML = `<div style="color:var(--ink-3)">${fmtDate(c[i].d)}${held ? " · holding " + esc(held.ticker) : " · cash"}</div>
-      <div><span class="swatch" style="background:var(--trader)"></span>trader <b>${usd(c[i].t)}</b></div>
-      <div><span class="swatch" style="background:var(--spy)"></span>SPY <b>${usd(c[i].s)}</b></div>`;
+    const h = DATA.trades.find(t => t.fill_date && t.fill_date <= c[i].d && (!t.exit_date || t.exit_date > c[i].d));
+    tip.innerHTML = `<div style="color:var(--ink-3)">${fmtDate(c[i].d)}${h ? " · holding " + esc(h.ticker) : " · cash"}</div>
+      <div><span class="swatch" style="background:var(--trader)"></span>one-stock <b>${usd(c[i].t)}</b></div>
+      <div><span class="swatch" style="background:var(--spy)"></span>S&amp;P 500 <b>${usd(c[i].s)}</b></div>`;
     tip.style.opacity = 1;
     tip.style.left = Math.min(r.width - 190, x(i) * r.width / W + 12) + "px";
     tip.style.top = "64px";
@@ -402,45 +550,45 @@ function play() {
   }, step);
 }
 
+const ENDED = {switch: "Switched to something better", stop: "Cut the loss", target: "Hit its target", invalidation: "Reason to own it went away"};
+
 function cards() {
   const t = DATA.trades.slice().reverse();
-  if (!t.length) { $("cards").innerHTML = `<div class="card muted" style="grid-column:1/-1; text-align:center; padding:28px">The first card appears with Monday's call.</div>`; return; }
+  if (!t.length) { $("cards").innerHTML = `<div class="card muted" style="grid-column:1/-1; text-align:center; padding:28px">The first card appears with the first call.</div>`; return; }
   $("cards").innerHTML = t.map(tr => {
     const r = tr.return_pct, cls = r == null ? "" : (r >= 0 ? "up" : "down");
     const funnel = (tr.funnel || "").split("->").map(s => s.trim());
     const range = tr.target - tr.stop, now = tr.exit ?? tr.fill ?? tr.stop;
     const pos = v => Math.max(0, Math.min(100, (v - tr.stop) / range * 100));
     const ended = tr.exit_reason
-      ? `${esc(tr.exit_reason === "switch" ? "Switched out" : tr.exit_reason === "stop" ? "Stopped out" : tr.exit_reason === "target" ? "Hit target" : tr.exit_reason)} on ${fmtDate(tr.exit_date)} after ${tr.days_held ?? "?"} trading days (expected ~${Math.round(tr.d_eff)})`
-      : `Still holding · expected to resolve in ~${Math.round(tr.d_eff)} trading days`;
+      ? `${esc(ENDED[tr.exit_reason] || tr.exit_reason)} on ${fmtDate(tr.exit_date)}, after ${tr.days_held ?? "?"} trading days (expected ~${Math.round(tr.d_eff)})`
+      : `Still holding · expected to play out in ~${Math.round(tr.d_eff)} trading days`;
     const gap = tr.exit_price_date && tr.exit_date && tr.exit_price_date !== tr.exit_date
-      ? ` · priced at the last observed close (${fmtDate(tr.exit_price_date)}) — the price feed stopped` : "";
-    return `<div class="card tcard">
-      <div class="top"><div><div class="tk">${esc(tr.ticker)}</div>${tr.name ? `<div class="muted">${esc(tr.name)}</div>` : ""}<div class="when">Called ${fmtDate(tr.date)}${tr.replaces ? " · replaced " + esc(tr.replaces.split(":").pop()) : ""}</div></div>
+      ? ` · priced at the last available close (${fmtDate(tr.exit_price_date)}) because the price feed stopped` : "";
+    return `<div class="card tcard" id="call-${esc(tr.date)}">
+      <div class="top"><div><div class="tk">${esc(tr.ticker)}</div>${tr.name ? `<div class="muted">${esc(tr.name)}</div>` : ""}<div class="when">Called ${fmtDate(tr.date)}, 10am ET${tr.replaces ? " · replaced " + esc(tr.replaces.split(":").pop()) : ""}</div></div>
         <div class="ret ${cls}">${r == null ? "open" : pct(r)}</div></div>
       ${tr.edge == null ? "" : `<div class="knew">
-        <div><div class="k">Shortlist</div><div class="v">${esc(funnel[0] || "—")} → ${esc(funnel[funnel.length - 1] || "—")}</div></div>
-        <div><div class="k">Edge / day</div><div class="v">${tr.edge ? (tr.edge * 100).toFixed(2) + "%" : "—"}</div></div>
-        <div><div class="k">Bar to clear</div><div class="v">${tr.hurdle ? (tr.hurdle * 100).toFixed(2) + "%" : "—"}</div></div>
+        <div><div class="k">Shortlist</div><div class="v">${esc(funnel[0] || "-")} → ${esc(funnel[funnel.length - 1] || "-")}</div></div>
+        <div><div class="k">Edge / day</div><div class="v">${tr.edge ? (tr.edge * 100).toFixed(2) + "%" : "-"}</div></div>
+        <div><div class="k">Bar to clear</div><div class="v">${tr.hurdle ? (tr.hurdle * 100).toFixed(2) + "%" : "-"}</div></div>
       </div>`}
       <div>
-        <div class="muted" style="display:flex; justify-content:space-between; margin-bottom:6px"><span>Stop ${usd(tr.stop)}</span><span>Target ${usd(tr.target)}</span></div>
+        <div class="muted" style="display:flex; justify-content:space-between; margin-bottom:6px"><span>Sell if it falls to ${usd(tr.stop)}</span><span>Aiming for ${usd(tr.target)}</span></div>
         <div class="bar"><i style="left:0; width:${pos(now)}%"></i>${tr.fill ? `<b style="left:${pos(tr.fill)}%"></b>` : ""}</div>
       </div>
-      <div class="muted">${ended}${gap}</div>
+      <div class="foot"><span class="muted">${ended}${gap}</span>
+        ${DEMO ? "" : `<button class="btn sm" data-share="call" data-date="${esc(tr.date)}">Share this call</button>`}</div>
     </div>`;
   }).join("");
 }
 
 function shortlist() {
-  if (!DATA.shortlist || DEMO) {  // public pages never carry it; the demo has no "today"
-    document.querySelectorAll("section").forEach(sec => { if (sec.querySelector("#shortlist")) sec.style.display = "none"; });
-    return;
-  }
+  if (!DATA.shortlist || DEMO) { $("shortlist-section").style.display = "none"; return; }  // public pages never carry it
   const s = DATA.shortlist;
   $("shortlist-sub").textContent = s.length
-    ? `${s.length} stocks that a statistically proven strategy is buying right now (as of ${fmtDate(DATA.shortlist_as_of)}). The engine picks from these — and only these.`
-    : "No proven strategy is buying anything right now — which means cash.";
+    ? `${s.length} stocks that a strategy which passed the test is buying right now (as of ${fmtDate(DATA.shortlist_as_of)}). The rules pick from these, and only these.`
+    : "No strategy that passed the test is buying anything right now, which means cash.";
   $("shortlist").innerHTML = s.map(n => `<span class="chip">${esc(n.ticker)}<small>${esc(n.name)}</small></span>`).join("");
 }
 
@@ -448,22 +596,50 @@ function ledger() {
   const rows = DATA.trades.slice().reverse();
   $("ledger").innerHTML = rows.length ? rows.map(t => {
     const r = t.return_pct, cls = r == null ? "" : (r >= 0 ? "up" : "down");
-    const ended = t.exit_reason ? `${esc(t.exit_reason)} · ${fmtDate(t.exit_date)}` : "holding";
+    const ended = t.exit_reason ? `${esc(ENDED[t.exit_reason] || t.exit_reason)} · ${fmtDate(t.exit_date)}` : "holding";
     return `<tr><td>${fmtDate(t.date)}</td><td><b>${esc(t.ticker)}</b></td>
       <td class="num">${t.fill ? usd(t.fill) : "at the close"}</td><td class="num hide-sm">${usd(t.stop)}</td>
       <td class="num hide-sm">${usd(t.target)}</td><td>${ended}</td>
-      <td class="num ${cls}">${r == null ? "—" : pct(r)}</td></tr>`;
-  }).join("") : `<tr><td colspan="7" style="color:var(--ink-2); text-align:center; padding:28px">No trades yet. The first call lands Monday morning.</td></tr>`;
+      <td class="num ${cls}">${r == null ? "-" : pct(r)}</td></tr>`;
+  }).join("") : `<tr><td colspan="7" style="color:var(--ink-2); text-align:center; padding:28px">No trades yet. The first call lands the next trading morning.</td></tr>`;
 }
 
 function fineprint() {
   $("r-stop").textContent = "−" + Math.round(DATA.rules.stop_pct * 100) + "%";
-  $("f-friction").textContent = Math.round(DATA.rules.friction * 10000) + " basis points";
-  $("f-min").textContent = DATA.stats.min_n;
-  $("built").textContent = fmtDate(DATA.built) + ", from the record as committed";
+  $("f-friction").textContent = (DATA.rules.friction * 100).toFixed(1) + "%";
+  $("f-min").textContent = MIN_N;
+  $("built").textContent = fmtDate(DATA.built);
+  const handles = [FOLLOW.x && `<a href="https://x.com/${esc(FOLLOW.x)}">X</a>`, FOLLOW.threads && `<a href="https://www.threads.net/@${esc(FOLLOW.threads)}">Threads</a>`].filter(Boolean);
+  $("follow-note").innerHTML = handles.length
+    ? `Get each morning's call as it's made: follow on ${handles.join(" or ")}. Every post is timestamped before the market grades it.`
+    : "Daily posts of each call on X and Threads are starting soon, each one timestamped before the market grades it.";
 }
 
-demoMode(); scoreboard(); draw(); cards(); shortlist(); ledger(); fineprint();
+// Sharing: native share sheet on phones, intent links elsewhere. Nothing is tracked.
+function toast(msg) { const t = $("toast"); t.textContent = msg; t.classList.add("on"); setTimeout(() => t.classList.remove("on"), 1800); }
+function shareText(kind, date) {
+  if (kind !== "call") return {text: SHARE_LINE, url: SITE};
+  const tr = DATA.trades.find(t => t.date === date);
+  const who = tr.name ? `${tr.name} (${tr.ticker})` : tr.ticker;
+  return {text: `On ${fmtDate(tr.date)} at 10am ET, fixed rules picked ${who}. Sell if it falls to ${usd(tr.stop)}, aiming for ${usd(tr.target)}. Written down before the outcome. Watch it play out:`, url: SITE + "#call-" + tr.date};
+}
+document.addEventListener("click", async e => {
+  const b = e.target.closest("[data-share]");
+  if (!b) return;
+  const kind = b.dataset.share, s = shareText(kind, b.dataset.date), both = s.text + " " + s.url;
+  const enc = encodeURIComponent;
+  if ((kind === "page" || kind === "call") && navigator.share) {
+    try { await navigator.share({title: "one-stock", text: s.text, url: s.url}); } catch (err) {}
+    return;
+  }
+  if (kind === "whatsapp") return window.open("https://wa.me/?text=" + enc(both), "_blank", "noopener");
+  if (kind === "x") return window.open(`https://x.com/intent/post?text=${enc(s.text)}&url=${enc(s.url)}`, "_blank", "noopener");
+  if (kind === "threads") return window.open("https://www.threads.net/intent/post?text=" + enc(both), "_blank", "noopener");
+  try { await navigator.clipboard.writeText(kind === "copy" ? s.url : both); toast(kind === "copy" ? "Link copied" : "Copied. Paste it anywhere"); }
+  catch (err) { prompt("Copy this:", both); }
+});
+
+demoMode(); hero(); why(); funnel(); scoreboard(); draw(); cards(); shortlist(); ledger(); fineprint();
 $("play").onclick = play;
 let rz; window.addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(() => { if (!playing) draw(); }, 120); });
 </script>
