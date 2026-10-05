@@ -4,18 +4,18 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>One stock: a public experiment</title>
-<meta name="description" content="A public experiment: rules backed by daily research put 100% into one stock, called at 10am ET before the outcome. Every win and loss stays up.">
+<meta name="description" content="A computer tests dozens of strategies against the stock market every day. The winners pick one stock. Win or lose, every result stays up. Not investment advice.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="one-stock">
-<meta property="og:title" content="What does it take to pick a winning stock? One stock, all in, in public. Let's find out.">
-<meta property="og:description" content="A public experiment: one stock, all in, called before the outcome. Every win and loss stays up.">
+<meta property="og:title" content="What if you could own the best stock, every day? A computer tries, with a pretend $1,000.">
+<meta property="og:description" content="A computer tests dozens of strategies against the stock market every day. The winners pick one stock. Win or lose, every result stays up. Not investment advice.">
 <meta property="og:url" content="https://spillai13.github.io/one-stock/">
 <meta property="og:image" content="https://spillai13.github.io/one-stock/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="What does it take to pick a winning stock? One stock, all in, in public. Let's find out.">
-<meta name="twitter:description" content="A public experiment: one stock, all in, called before the outcome. Every win and loss stays up.">
+<meta name="twitter:title" content="What if you could own the best stock, every day? A computer tries, with a pretend $1,000.">
+<meta name="twitter:description" content="A computer tests dozens of strategies against the stock market every day. The winners pick one stock. Win or lose, every result stays up. Not investment advice.">
 <meta name="twitter:image" content="https://spillai13.github.io/one-stock/og.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -57,15 +57,21 @@ header.top { display: flex; justify-content: space-between; align-items: center;
 @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(27,175,122,.55);} 70% { box-shadow: 0 0 0 10px rgba(27,175,122,0);} 100% { box-shadow: 0 0 0 0 rgba(27,175,122,0);} }
 .hero { padding: 48px 0 8px; }
 .eyebrow { color: var(--ink-3); font-weight: 600; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; }
-h1 { font-size: clamp(30px, 4.2vw, 46px); white-space: normal; line-height: 1.06; letter-spacing: -0.035em; margin: 12px 0 18px; font-weight: 800; }
-h1 em { font-style: normal; color: var(--trader); }
+h1 { text-wrap: balance; font-size: clamp(30px, 4.2vw, 46px); white-space: normal; line-height: 1.06; letter-spacing: -0.035em; margin: 12px 0 18px; font-weight: 800; }
+h1 em { font-style: normal; color: var(--trader); display: block; }
+h1 .accent { color: var(--trader); }
 .lede { color: var(--ink-2); font-size: 19px; max-width: 660px; margin: 0; }
 .statusline { display: flex; flex-wrap: wrap; gap: 10px 22px; align-items: center; margin: 28px 0 0; padding: 16px 20px; }
 .statusline .now { font-weight: 700; }
 .statusline .early { color: var(--warn); font-weight: 600; }
 .statusline .next { color: var(--ink-2); font-variant-numeric: tabular-nums; }
-.pick { margin: 26px 0 0; font-size: 20px; color: var(--ink-2); }
-.pick b { color: var(--ink); font-size: clamp(24px, 3.4vw, 32px); letter-spacing: -0.02em; display: block; margin-top: 2px; }
+.pick:empty { display: none; }
+.pick { margin: 26px 0 0; display: inline-flex; flex-direction: column; gap: 4px; min-width: min(100%, 360px);
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 22px; }
+.pick .lbl { font-size: 13px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); }
+.pick b { color: var(--ink); font-size: clamp(22px, 3vw, 28px); letter-spacing: -0.02em; line-height: 1.2; }
+.pick .meta { font-size: 15px; color: var(--ink-2); }
+.pick .up { color: var(--good); font-weight: 600; } .pick .down { color: var(--bad); font-weight: 600; }
 .ctas { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
 .btn { display: inline-flex; align-items: center; gap: 8px; border-radius: 999px; padding: 11px 18px; font: 600 15px Inter;
   cursor: pointer; text-decoration: none; border: 1px solid var(--line); background: var(--surface); color: var(--ink); }
@@ -189,21 +195,20 @@ footer ul { padding-left: 18px; margin: 10px 0 0; } footer li { margin: 4px 0; }
   <!-- 1. The idea, in five seconds -->
   <div class="hero">
     <div class="eyebrow" id="eyebrow">A public experiment</div>
-    <h1 id="headline">What does it take to pick a winning stock?<br><em>One stock, all in, in public. Let's find out.</em></h1>
-    <p class="lede" id="lede">Behind the scenes, a research system does the hard work,
-      testing trading ideas against the market every day. Its rules then back one stock
-      with conviction, putting in 100% of the money, as the best shot at the most growth in the least time.</p>
+    <h1 id="headline">What if you could own <span class="accent">the best stock</span>, every day?</h1>
+    <p class="lede" id="lede">This is a public experiment to find out. Every market day, a computer
+      tests dozens of strategies against the stock market and all the money goes to one winning stock.
+      Win or lose, every result stays here. Not investment advice.</p>
     <div class="pick" id="pick"></div>
     <div class="ctas">
       <button class="btn primary" data-share="page">Share the experiment</button>
-      <a class="btn" href="#record">Today's call ↓</a>
-      <a class="btn" href="#how">How a stock gets picked ↓</a>
+      <a class="btn" href="#record">Follow the race ↓</a>
     </div>
   </div>
 
   <!-- 2. The record, exactly as it stands -->
   <section id="record">
-    <h2>The record so far</h2>
+    <h2>How it's going</h2>
     <div class="card statusline">
       <span class="now" id="st-now"></span>
       <span class="early" id="st-early"></span>
@@ -211,17 +216,17 @@ footer ul { padding-left: 18px; margin: 10px 0 0; } footer li { margin: 4px 0; }
     </div>
     <div class="scoreboard" style="margin-top:16px">
       <div class="card stat">
-        <div class="k"><span class="swatch" style="background:var(--trader)"></span>$1,000 following the calls</div>
+        <div class="k"><span class="swatch" style="background:var(--trader)"></span>$1,000 following the picks</div>
         <div class="v" id="v-trader">$1,000</div>
         <div class="s" id="s-trader"></div>
       </div>
       <div class="card stat">
-        <div class="k"><span class="swatch" style="background:var(--spy)"></span>$1,000 in the S&amp;P 500</div>
+        <div class="k"><span class="swatch" style="background:var(--spy)"></span>$1,000 in the overall market (S&amp;P 500)</div>
         <div class="v" id="v-spy">$1,000</div>
         <div class="s" id="s-spy"></div>
       </div>
       <div class="card stat">
-        <div class="k">Trades finished</div>
+        <div class="k">Picks finished (5 needed to judge)</div>
         <div class="v" id="v-days">0</div>
         <div class="s" id="s-days"></div>
       </div>
@@ -265,8 +270,8 @@ footer ul { padding-left: 18px; margin: 10px 0 0; } footer li { margin: 4px 0; }
         <p id="w-lose-p">Look back at any chart and the winners are obvious. Looking forward, almost nobody can tell. Most strategies that look smart on paper do worse than simply buying the whole market.</p></div>
       <div class="card"><div class="num">100%</div><h3>Conviction means all in</h3>
         <p>When the rules find their best bet, they don't spread the money across twenty stocks. All of it goes into the one with the best shot at the most growth in the least time. If a better one shows up, they sell and switch.</p></div>
-      <div class="card"><div class="num">0</div><h3>Out in the open</h3>
-        <p>Every call is written down at 10am ET, before the outcome, and never edited. Wins and losses stay up side by side. Zero edits, ever.</p></div>
+      <div class="card"><div class="num">All</div><h3>Out in the open</h3>
+        <p>Every pick is written down at 10am ET and stays on this page. Wins and losses sit side by side.</p></div>
     </div>
   </section>
 
@@ -305,7 +310,7 @@ footer ul { padding-left: 18px; margin: 10px 0 0; } footer li { margin: 4px 0; }
         <p>All in on one stock, never spread thin. To buy something new, it sells everything first.</p>
         <p class="warnline">One stock swings harder than many. This is an experiment. Don't copy it with money you need.</p></div>
       <div class="card rule"><div class="big" id="r-stop"></div><p>The price it sells at to cut a loss is set before it buys. Hit it, and it's out. No hoping.</p></div>
-      <div class="card rule"><div class="big">0 edits</div><p>A call is never changed once made. Results are only ever added, never rewritten.</p></div>
+      <div class="card rule"><div class="big">10am</div><p>One check every market day at 10am ET: keep the stock, swap it, or sell.</p></div>
     </div>
   </section>
 
@@ -330,7 +335,7 @@ footer ul { padding-left: 18px; margin: 10px 0 0; } footer li { margin: 4px 0; }
       <li>Until at least <span id="f-min"></span> trades have finished, the page says "too early to tell" instead of guessing. Averages come with a range showing how sure the result is.</li>
       <li>The research counts are re-checked every day and change; the date they're from is shown next to them. "In the race" means the strategies being tested now, not every one ever tried.</li>
       <li>"Beat the market" means: in past trades, by more than luck usually explains, on a strict statistical test. The past doesn't promise the future. That's what this experiment checks.</li>
-      <li>The record restarted on Sep 26, 2026 with this engine. Calls from an earlier, retired engine (Sep 2–25) were taken off the record then; they remain, unedited, in the project's private history.</li>
+      <li>The record restarted on Sep 26, 2026 with this engine. Calls from an earlier, retired engine (Sep 2–25) were taken off the record then; they remain in the project's private history.</li>
       <li>This is not investment advice.</li>
       <li id="f-link"></li>
       <li>Every number on this page comes from the record as written. Built <span id="built"></span>.</li>
@@ -371,7 +376,7 @@ const VERIFIED = {robinhood: ""};
 // the poster is live. A new state's lines are written when it can first happen, owner-approved.
 const VOICE = /*VOICE*/{
   "new": [
-    "10am ET: the rules picked {who}. All in. The rules don't explain themselves and don't take it back.",
+    "10am ET: the rules picked {who}. All in. The rules don't explain themselves.",
     "New pick: {tkr}, named at 10am ET, bought at the close. Fixed rules, no hunches, every result stays up."
   ],
   "up": [
@@ -397,7 +402,7 @@ const VOICE = /*VOICE*/{
     "Trade {k} of {min} is done: {tkr} {ret}. Officially no longer 'too early to tell'. Now it's just 'early'."
   ]
 }/*/VOICE*/;
-const SHARE_LINE = "What does it take to pick a winning stock? This public experiment is trying: one stock, all in, every result shown.";
+const SHARE_LINE = "What if you could own the best stock, every day? A computer is trying it with a pretend $1,000, against the stock market.";
 
 (function theme() {
   const root = document.documentElement;
@@ -429,7 +434,7 @@ function demoMode() {
     morning from ${fmtDate(DEMO.start)} to ${fmtDate(DEMO.end)}, seeing only what was known by then: the
     research results from the evening before, prices up to the previous close. Nothing here was called in advance,
     and the line is drawn dashed for that reason. <a href="index.html">The live record is here.</a></p>`;
-  $("headline").innerHTML = "What does it take to pick a winning stock?<br><em>Here's how these rules would have done.</em>";
+  $("headline").innerHTML = 'What if you could own <span class="accent">the best stock</span>, every day?';
   $("curve-label").textContent = "Growth of $1,000, replayed from";
   $("cards-title").textContent = "Each call, as the replay made it";
   $("cards-sub").textContent = "What the rules could see at 10:00 on each past morning, and what happened next.";
@@ -456,11 +461,15 @@ function hero() {
     ? `${DEMO ? "Ended holding" : "Holding"} ${h.name || h.ticker}${h.name ? " (" + h.ticker + ")" : ""} since ${fmtDate(h.fill_date || h.date)}`
     : DATA.first_pick ? "In cash: nothing cleared the bar" : "First call: next trading morning, 10am ET");
   $("st-early").textContent = EARLY
-    ? `Too early to tell if this works: ${DATA.stats.closed} of ${MIN_N} trades finished`
-    : `${DATA.stats.closed} trades finished`;
+    ? `Too early to tell if this works: ${DATA.stats.closed} of ${MIN_N} picks finished`
+    : `${DATA.stats.closed} picks finished`;
+  const p = h ? position(h) : null;
+  const gain = p && p.ret != null ? ` · <span class="${p.ret >= 0 ? "up" : "down"}">${pct(p.ret)}</span>` : "";
   $("pick").innerHTML = h
-    ? `${DEMO ? "Where the replay ended" : '<span class="live"></span>Today\'s pick, 100% in'}<b>${esc(h.name || h.ticker)}${h.name ? " (" + esc(h.ticker) + ")" : ""}</b>`
-    : DATA.first_pick ? `Today's pick<b>Cash: nothing cleared the bar</b>` : "";
+    ? `<span class="lbl">${DEMO ? "Where the replay ended" : '<span class="live"></span>Holding now (pretend)'}</span>
+       <b>${esc(h.name || h.ticker)}${h.name ? " (" + esc(h.ticker) + ")" : ""}</b>
+       <span class="meta">Since ${fmtDate(h.fill_date || h.date)}${gain}</span>`
+    : DATA.first_pick ? `<span class="lbl">Holding now</span><b>Cash</b><span class="meta">Nothing cleared the bar today.</span>` : "";
   if (!DEMO) countdown();
 }
 
@@ -475,7 +484,7 @@ function countdown() {
     const s = Math.max(0, Math.floor((next.t - now) / 1000));
     const hh = Math.floor(s / 3600), mm = Math.floor(s % 3600 / 60), ss = s % 60;
     const day = new Date(next.d + "T12:00:00").toLocaleDateString("en-US", {weekday: "short", month: "short", day: "numeric"});
-    $("st-next").textContent = `Next call in ${hh}h ${String(mm).padStart(2, "0")}m ${String(ss).padStart(2, "0")}s · ${day}, 10am ET`;
+    $("st-next").textContent = `Next check in ${hh}h ${String(mm).padStart(2, "0")}m ${String(ss).padStart(2, "0")}s · ${day}, 10am ET`;
   };
   tick(); setInterval(tick, 1000);
 }
@@ -681,10 +690,10 @@ function fineprint() {
 // Sharing: native share sheet on phones, intent links elsewhere. Nothing is tracked.
 function toast(msg) { const t = $("toast"); t.textContent = msg; t.classList.add("on"); setTimeout(() => t.classList.remove("on"), 1800); }
 function shareText(kind, date) {
-  if (kind !== "call") return {text: SHARE_LINE, url: SITE};
+  if (kind !== "call") return {text: SHARE_LINE + " " + labels(), url: SITE};
   const tr = DATA.trades.find(t => t.date === date);
   const who = tr.name ? `${tr.name} (${tr.ticker})` : tr.ticker;
-  return {text: `On ${fmtDate(tr.date)} at 10am ET, fixed rules picked ${who}. Sell if it falls to ${usd(tr.stop)}, aiming for ${usd(tr.target)}. Watch it play out:`, url: SITE + "#call-" + tr.date};
+  return {text: `On ${fmtDate(tr.date)} at 10am ET, fixed rules picked ${who}. Sell if it falls to ${usd(tr.stop)}, aiming for ${usd(tr.target)}. ${labels()} Watch it play out:`, url: SITE + "#call-" + tr.date};
 }
 document.addEventListener("click", async e => {
   const b = e.target.closest("[data-share]");
@@ -743,7 +752,7 @@ function drawCard(tr) {
     // Stat row
     const stats = [
       ["vs S&P 500", p.vs == null ? "-" : (p.vs >= 0 ? "+" : "") + p.vs.toFixed(2) + " pts", p.vs == null ? C.ink : p.vs >= 0 ? C.good : C.bad],
-      ["Called", `${fmtDate(tr.date)}, 10am ET`, C.ink],
+      ["Picked", `${fmtDate(tr.date)}, 10am ET`, C.ink],
       ["Bought at", tr.fill ? usd(tr.fill) : "the close", C.ink],
       ["Record so far", tot == null ? "-" : `${signed(tot)} vs S&P ${signed(spxTot)}`, C.ink],
     ];
@@ -760,9 +769,9 @@ function drawCard(tr) {
 
   // Footer: the question, the link, the honest labels
   g.fillStyle = C.line; g.fillRect(64, 480, W - 128, 1);
-  text("What does it take to pick a winning stock?", 64, 526, font(700, 28), C.ink);
+  text("What if you could own the best stock, every day?", 64, 526, font(700, 28), C.ink);
   text(SITE.replace("https://", ""), 64, 564, font(600, 22, true), C.blue);
-  const early = DATA.stats.closed < MIN_N ? `${DATA.stats.closed} of ${MIN_N} trades finished, too early to tell · ` : "";
+  const early = DATA.stats.closed < MIN_N ? `${DATA.stats.closed} of ${MIN_N} picks finished, too early to tell · ` : "";
   const asOf = p && p.asOf ? `As of ${fmtDate(p.asOf)} close · ` : "";
   text(`${asOf}${early}Pretend money, closing prices, before costs. Not advice.`, 64, 600, font(500, 17), C.ink3);
   if (VERIFIED.robinhood && p && p.open) text("✓ Verified trade on Robinhood", W - 64, 564, font(700, 20), C.good, "right");
