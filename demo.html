@@ -7,14 +7,14 @@
 <meta name="description" content="A public experiment: rules backed by daily research put 100% into one stock, called at 10am ET before the outcome. Every win and loss stays up.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="one-stock">
-<meta property="og:title" content="Can anyone pick a winning stock in advance? Follow us to find out. One stock, all in, in public.">
+<meta property="og:title" content="What does it take to pick the winning stock? One stock, all in, in public. Let's find out.">
 <meta property="og:description" content="A public experiment: one stock, all in, called before the outcome. Every win and loss stays up.">
 <meta property="og:url" content="https://spillai13.github.io/one-stock/">
 <meta property="og:image" content="https://spillai13.github.io/one-stock/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Can anyone pick a winning stock in advance? Follow us to find out. One stock, all in, in public.">
+<meta name="twitter:title" content="What does it take to pick the winning stock? One stock, all in, in public. Let's find out.">
 <meta name="twitter:description" content="A public experiment: one stock, all in, called before the outcome. Every win and loss stays up.">
 <meta name="twitter:image" content="https://spillai13.github.io/one-stock/og.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -81,22 +81,17 @@ h2 { font-size: clamp(26px, 3.6vw, 34px); letter-spacing: -0.025em; margin: 0 0 
 .why h3 { margin: 0 0 6px; font-size: 18px; letter-spacing: -0.01em; }
 .why p { margin: 0; color: var(--ink-2); font-size: 15px; }
 /* The funnel: each row's bar width is its share of what was tracked. */
-.funnel { display: flex; flex-direction: column; gap: 10px; }
-.frow { display: grid; grid-template-columns: 92px 1fr; gap: 16px; align-items: center; }
-.frow .n { font: 800 34px/1 Inter; letter-spacing: -0.03em; text-align: right; font-variant-numeric: tabular-nums; }
-.frow .bar2 { position: relative; border-radius: 12px; background: var(--surface-2); min-height: 52px; display: flex; align-items: center; overflow: hidden; }
-.frow .bar2 i { position: absolute; inset: 0 auto 0 0; background: color-mix(in srgb, var(--trader) 22%, transparent); border-radius: 12px; }
-.frow .bar2 span { position: relative; padding: 10px 16px; font-size: 15px; }
-.frow .bar2 span small { display: block; color: var(--ink-3); font-size: 13px; }
-.frow.split .bar2 { background: none; gap: 8px; }
-.seg { flex: 1; border-radius: 12px; padding: 10px 14px; background: var(--surface-2); min-height: 52px; }
-.seg b { font: 800 22px/1 Inter; display: block; margin-bottom: 4px; }
-.seg.lose b { color: var(--bad); } .seg.win b { color: var(--good); } .seg.tie b { color: var(--ink-2); }
-.seg small { color: var(--ink-2); font-size: 13px; }
-.frow.final .n { color: var(--trader); }
-.frow.final .bar2 i { background: var(--trader); }
-.frow.final .bar2 { background: color-mix(in srgb, var(--trader) 14%, var(--surface-2)); }
-.frow.final .bar2 span { font-weight: 700; padding-left: 22px; }
+.race { display: grid; grid-template-columns: 1fr 1.25fr; gap: 28px; align-items: center; }
+.dots { display: flex; flex-wrap: wrap; gap: 7px; }
+.dots i { width: 18px; height: 18px; border-radius: 50%; background: var(--line); }
+.dots i.win { background: var(--good); box-shadow: 0 0 0 4px color-mix(in srgb, var(--good) 25%, transparent); }
+.race-cap { font: 700 20px/1.3 Inter; margin-top: 16px; letter-spacing: -0.01em; }
+.race-cap b { color: var(--good); }
+.rsteps { display: flex; flex-direction: column; gap: 14px; }
+.rsteps > div { display: grid; grid-template-columns: 30px 1fr; gap: 10px; }
+.rsteps .k { font: 700 14px/1.6 JetBrains Mono, monospace; color: var(--trader); }
+.rsteps h4 { margin: 0 0 2px; font-size: 16px; }
+.rsteps p { margin: 0; color: var(--ink-2); font-size: 14.5px; }
 .asof { color: var(--ink-3); font-size: 13px; margin-top: 12px; }
 .scoreboard { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin: 0 0 16px; }
 .stat .k { color: var(--ink-3); font-size: 13px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
@@ -161,9 +156,7 @@ footer ul { padding-left: 18px; margin: 10px 0 0; } footer li { margin: 4px 0; }
 @media (max-width: 760px) {
   .wrap { padding: 0 16px; }
   .cards, .why, .scoreboard, .rules { grid-template-columns: 1fr; }
-  .frow { grid-template-columns: 64px 1fr; gap: 10px; }
-  .frow .n { font-size: 26px; }
-  .frow.split .bar2 { flex-direction: column; align-items: stretch; }
+  .race { grid-template-columns: 1fr; }
   .hide-sm { display: none; }
 }
 </style>
@@ -182,7 +175,7 @@ footer ul { padding-left: 18px; margin: 10px 0 0; } footer li { margin: 4px 0; }
   <!-- 1. The idea, in five seconds -->
   <div class="hero">
     <div class="eyebrow" id="eyebrow">A public experiment</div>
-    <h1 id="headline">Can anyone pick a winning stock in advance?<br><em>Follow us to find out. One stock, all in, in public.</em></h1>
+    <h1 id="headline">What does it take to pick the winning stock?<br><em>One stock, all in, in public. Let's find out.</em></h1>
     <p class="lede" id="lede">Behind the scenes, a research system does the hard work,
       testing trading ideas against the market every day. Its rules then back one stock
       with conviction, putting in 100% of the money, as the best shot at the most growth in the least time.</p>
@@ -266,9 +259,20 @@ footer ul { padding-left: 18px; margin: 10px 0 0; } footer li { margin: 4px 0; }
   <!-- 4. How: simple on top, the experimentation underneath -->
   <section id="how">
     <h2>How one stock gets picked</h2>
-    <p class="sub">Behind the scenes, a research system keeps testing trading ideas against the S&amp;P 500. Most don't survive. Here's the funnel, from the latest numbers.</p>
+    <p class="sub">Trading strategies compete every trading day. Only a winner gets to pick.</p>
     <div class="card">
-      <div class="funnel" id="funnel"></div>
+      <div class="race">
+        <div>
+          <div class="dots" id="dots" aria-hidden="true"></div>
+          <div class="race-cap" id="race-cap"></div>
+        </div>
+        <div class="rsteps">
+          <div><span class="k">01</span><div><h4>Many strategies, one race</h4><p>Each is a different way of choosing stocks. All of them are measured against the S&amp;P 500.</p></div></div>
+          <div><span class="k">02</span><div><h4>Most lose</h4><p>Beating the market once is luck. A strategy has to keep winning.</p></div></div>
+          <div><span class="k">03</span><div><h4>Only winners pick</h4><p>Stop beating the market, and a strategy stops picking. It can happen any day.</p></div></div>
+          <div><span class="k">04</span><div><h4>All in on one</h4><p>From the winners' picks, it puts everything in one stock and holds it until its rules say sell. No winner? It buys nothing.</p></div></div>
+        </div>
+      </div>
       <div class="asof" id="funnel-asof"></div>
     </div>
   </section>
@@ -284,7 +288,7 @@ footer ul { padding-left: 18px; margin: 10px 0 0; } footer li { margin: 4px 0; }
     <h2>The rules it can't break</h2>
     <div class="rules">
       <div class="card rule"><div class="big">1 stock</div>
-        <p>All in on the best bet, never spread thin. To buy something new, it sells everything first.</p>
+        <p>All in on one stock, never spread thin. To buy something new, it sells everything first.</p>
         <p class="warnline">One stock swings harder than many. This is an experiment. Don't copy it with money you need.</p></div>
       <div class="card rule"><div class="big" id="r-stop"></div><p>The price it sells at to cut a loss is set before it buys. Hit it, and it's out. No hoping.</p></div>
       <div class="card rule"><div class="big">0 edits</div><p>A call is never changed once made. Results are only ever added, never rewritten.</p></div>
@@ -310,7 +314,7 @@ footer ul { padding-left: 18px; margin: 10px 0 0; } footer li { margin: 4px 0; }
       <li>No real money is involved yet. Trades are pretend: bought and sold at the day's closing price, by the rules.</li>
       <li>Results don't include trading costs, which would take roughly <span id="f-friction"></span> off each buy-and-sell.</li>
       <li>Until at least <span id="f-min"></span> trades have finished, the page says "too early to tell" instead of guessing. Averages come with a range showing how sure the result is.</li>
-      <li>The research counts are re-checked every day and change; the date they're from is shown next to them. "Ideas tracked" means the ideas the research system follows now, not every idea it has ever tried.</li>
+      <li>The research counts are re-checked every day and change; the date they're from is shown next to them. "In the race" means the strategies being tested now, not every one ever tried.</li>
       <li>"Beat the market" means: in past trades, by more than luck usually explains, on a strict statistical test. The past doesn't promise the future. That's what this experiment checks.</li>
       <li>The record restarted on Sep 26, 2026 with this engine. Calls from an earlier, retired engine (Sep 2–25) were taken off the record then; they remain, unedited, in the project's private history.</li>
       <li>This is not investment advice.</li>
@@ -322,7 +326,7 @@ footer ul { padding-left: 18px; margin: 10px 0 0; } footer li { margin: 4px 0; }
 <div class="toast" id="toast"></div>
 
 <script>
-const DATA = {"built": "2026-10-04", "era_start": "2026-09-26", "first_pick": "2026-09-03", "trades": [{"date": "2026-09-08", "ticker": "FRSH", "name": "Freshworks Inc.", "fill_date": "2026-09-08", "fill": 12.1, "stop": 11.13, "target": 13.31, "d_eff": 14.6, "exit_date": "2026-09-23", "exit": 11.89, "exit_reason": "switch", "exit_price_date": "2026-09-11", "return_pct": -1.736, "excess_spy_pct": -1.977, "days_held": 11.0, "replaces": ""}, {"date": "2026-09-23", "ticker": "DOCS", "name": "Doximity, Inc.", "fill_date": "2026-09-23", "fill": 26.57, "stop": 24.44, "target": 31.35, "d_eff": 17.3, "exit_date": "2026-10-01", "exit": 28.5, "exit_reason": "switch", "exit_price_date": "2026-10-01", "return_pct": 7.264, "excess_spy_pct": 7.761, "days_held": 6.0, "replaces": "FRSH"}, {"date": "2026-10-01", "ticker": "DOCU", "name": "DocuSign, Inc.", "fill_date": "2026-10-01", "fill": 69.74, "stop": 64.16, "target": 76.71, "d_eff": 12.4, "exit_date": null, "exit": null, "exit_reason": null, "exit_price_date": null, "return_pct": null, "excess_spy_pct": null, "days_held": null, "replaces": "DOCS"}], "curve": [{"d": "2026-09-03", "t": 1000.0, "s": 1000.0}, {"d": "2026-09-04", "t": 1000.0, "s": 996.15}, {"d": "2026-09-08", "t": 1000.0, "s": 990.67}, {"d": "2026-09-09", "t": 985.95, "s": 986.07}, {"d": "2026-09-10", "t": 980.99, "s": 980.16}, {"d": "2026-09-11", "t": 982.64, "s": 988.51}, {"d": "2026-09-14", "t": 982.64, "s": 984.1}, {"d": "2026-09-15", "t": 982.64, "s": 979.59}, {"d": "2026-09-16", "t": 982.64, "s": 975.27}, {"d": "2026-09-17", "t": 982.64, "s": 986.33}, {"d": "2026-09-21", "t": 982.64, "s": 1000.43}, {"d": "2026-09-22", "t": 982.64, "s": 1000.27}, {"d": "2026-09-23", "t": 982.64, "s": 993.07}, {"d": "2026-09-24", "t": 963.04, "s": 992.25}, {"d": "2026-09-25", "t": 974.51, "s": 997.65}, {"d": "2026-09-28", "t": 968.96, "s": 990.22}, {"d": "2026-09-29", "t": 980.8, "s": 988.4}, {"d": "2026-09-30", "t": 1048.1, "s": 986.37}, {"d": "2026-10-01", "t": 1054.02, "s": 988.13}], "stats": {"decisions": 21, "closed": 2, "open": 1, "return_per_trade": null, "min_n": 5}, "rules": {"stop_pct": 0.08, "friction": 0.003, "mode": "virtual"}, "demo": {"start": "2026-09-03", "end": "2026-10-02", "accepted": "company name, sector, industry and market cap are today's values (the table keeps no history); a market-cap move across the $300M floor, an industry reclassification, or an earnings date reported after the replayed morning could differ from what was known then", "gaps": [{"ticker": "FRSH", "price_date": "2026-09-11", "exit_date": "2026-09-23"}]}, "research": {"as_of": "2026-10-02", "tracked": 57, "set_aside": 49, "judged": 8, "beats": 1, "loses": 6, "unclear": 1}, "calls_ahead": ["2026-10-05T10:00:00-04:00", "2026-10-06T10:00:00-04:00", "2026-10-07T10:00:00-04:00", "2026-10-08T10:00:00-04:00", "2026-10-09T10:00:00-04:00", "2026-10-12T10:00:00-04:00"]};
+const DATA = {"built": "2026-10-04", "era_start": "2026-09-26", "first_pick": "2026-09-03", "trades": [{"date": "2026-09-08", "ticker": "FRSH", "name": "Freshworks Inc.", "fill_date": "2026-09-08", "fill": 12.1, "stop": 11.13, "target": 13.31, "d_eff": 14.6, "exit_date": "2026-09-23", "exit": 11.89, "exit_reason": "switch", "exit_price_date": "2026-09-11", "return_pct": -1.736, "excess_spy_pct": -1.977, "days_held": 11.0, "replaces": ""}, {"date": "2026-09-23", "ticker": "DOCS", "name": "Doximity, Inc.", "fill_date": "2026-09-23", "fill": 26.57, "stop": 24.44, "target": 31.35, "d_eff": 17.3, "exit_date": "2026-10-01", "exit": 28.5, "exit_reason": "switch", "exit_price_date": "2026-10-01", "return_pct": 7.264, "excess_spy_pct": 7.761, "days_held": 6.0, "replaces": "FRSH"}, {"date": "2026-10-01", "ticker": "DOCU", "name": "DocuSign, Inc.", "fill_date": "2026-10-01", "fill": 69.74, "stop": 64.16, "target": 76.71, "d_eff": 12.4, "exit_date": null, "exit": null, "exit_reason": null, "exit_price_date": null, "return_pct": null, "excess_spy_pct": null, "days_held": null, "replaces": "DOCS"}], "curve": [{"d": "2026-09-03", "t": 1000.0, "s": 1000.0}, {"d": "2026-09-04", "t": 1000.0, "s": 996.15}, {"d": "2026-09-08", "t": 1000.0, "s": 990.67}, {"d": "2026-09-09", "t": 985.95, "s": 986.07}, {"d": "2026-09-10", "t": 980.99, "s": 980.16}, {"d": "2026-09-11", "t": 982.64, "s": 988.51}, {"d": "2026-09-14", "t": 982.64, "s": 984.1}, {"d": "2026-09-15", "t": 982.64, "s": 979.59}, {"d": "2026-09-16", "t": 982.64, "s": 975.27}, {"d": "2026-09-17", "t": 982.64, "s": 986.33}, {"d": "2026-09-21", "t": 982.64, "s": 1000.43}, {"d": "2026-09-22", "t": 982.64, "s": 1000.27}, {"d": "2026-09-23", "t": 982.64, "s": 993.07}, {"d": "2026-09-24", "t": 963.04, "s": 992.25}, {"d": "2026-09-25", "t": 974.51, "s": 997.65}, {"d": "2026-09-28", "t": 968.96, "s": 990.22}, {"d": "2026-09-29", "t": 980.8, "s": 988.4}, {"d": "2026-09-30", "t": 1048.1, "s": 986.37}, {"d": "2026-10-01", "t": 1054.02, "s": 988.13}], "stats": {"decisions": 21, "closed": 2, "open": 1, "return_per_trade": null, "min_n": 5}, "rules": {"stop_pct": 0.08, "friction": 0.003, "mode": "virtual"}, "demo": {"start": "2026-09-03", "end": "2026-10-02", "accepted": "company name, sector, industry and market cap are today's values (the table keeps no history); a market-cap move across the $300M floor, an industry reclassification, or an earnings date reported after the replayed morning could differ from what was known then", "gaps": [{"ticker": "FRSH", "price_date": "2026-09-11", "exit_date": "2026-09-23"}]}, "research": {"as_of": "2026-10-02", "tracked": 57, "beats": 1, "judged": 8, "loses": 6}, "calls_ahead": ["2026-10-05T10:00:00-04:00", "2026-10-06T10:00:00-04:00", "2026-10-07T10:00:00-04:00", "2026-10-08T10:00:00-04:00", "2026-10-09T10:00:00-04:00", "2026-10-12T10:00:00-04:00"]};
 const $ = id => document.getElementById(id);
 const esc = v => String(v ?? "").replace(/[&<>"']/g, ch => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[ch]));
 const usd = v => "$" + v.toLocaleString("en-US", {minimumFractionDigits: 2, maximumFractionDigits: 2});
@@ -331,7 +335,7 @@ const fmtDate = s => new Date(s + "T12:00:00").toLocaleDateString("en-US", {mont
 const SITE = "https://spillai13.github.io/one-stock/";
 // Daily-call accounts. Empty until the poster is live; the page says "starting soon" meanwhile.
 const FOLLOW = {x: "", threads: ""};
-const SHARE_LINE = "Can anyone pick a winning stock in advance? This public experiment is trying: one stock, all in, every result shown.";
+const SHARE_LINE = "What does it take to pick the winning stock? This public experiment is trying: one stock, all in, every result shown.";
 
 (function theme() {
   const root = document.documentElement;
@@ -362,7 +366,7 @@ function demoMode() {
     morning from ${fmtDate(DEMO.start)} to ${fmtDate(DEMO.end)}, seeing only what was known by then: the
     research results from the evening before, prices up to the previous close. Nothing here was called in advance,
     and the line is drawn dashed for that reason. <a href="index.html">The live record is here.</a></p>`;
-  $("headline").innerHTML = "Can anyone pick a winning stock in advance?<br><em>Here's how these rules would have done.</em>";
+  $("headline").innerHTML = "What does it take to pick the winning stock?<br><em>Here's how these rules would have done.</em>";
   $("curve-label").textContent = "Growth of $1,000, replayed from";
   $("cards-title").textContent = "Each call, as the replay made it";
   $("cards-sub").textContent = "What the rules could see at 10:00 on each past morning, and what happened next.";
@@ -421,22 +425,14 @@ function why() {
 
 function funnel() {
   const r = DATA.research;
-  if (!r) { document.querySelector("#how .card").style.display = "none"; return; }
-  const w = n => Math.max(6, Math.round(n / r.tracked * 100));
-  const row = (n, label, small, width, cls = "") => `<div class="frow ${cls}"><div class="n">${n}</div>
-    <div class="bar2"><i style="width:${width}%"></i><span>${label}${small ? `<small>${small}</small>` : ""}</span></div></div>`;
-  $("funnel").innerHTML = [
-    row(r.tracked, "trading ideas being tracked", "Strategies, themes and rules the research system follows", 100),
-    row(r.set_aside, "set aside", "Not enough independent trades yet to judge fairly", w(r.set_aside)),
-    row(r.judged, "put to a strict test against the S&amp;P 500", "", w(r.judged)),
-    `<div class="frow split"><div class="n"></div><div class="bar2">
-      <div class="seg lose"><b>${r.loses}</b><small>reliably lose to the market</small></div>
-      <div class="seg tie"><b>${r.unclear}</b><small>too close to call</small></div>
-      <div class="seg win"><b>${r.beats}</b><small>beat${r.beats === 1 ? "s" : ""} it</small></div></div></div>`,
-    row("→", "the stocks it's buying today", "Minus anything hard to trade, too jumpy, or reporting earnings soon", 12),
-    row(1, "the calmest of them, held until the rules say sell", "", 4, "final"),
-  ].join("");
-  $("funnel-asof").textContent = `Counts as of ${fmtDate(r.as_of)}. The research is re-run every trading day, and its methods keep evolving, so these numbers change.`;
+  if (!r) { document.querySelector("#how .race > div:first-child").style.display = "none"; return; }
+  // One dot per strategy in the race; the winners lit, spread evenly through the field.
+  const lit = new Set(Array.from({length: r.beats}, (_, i) => Math.floor((i + 0.5) * r.tracked / r.beats)));
+  $("dots").innerHTML = Array.from({length: r.tracked}, (_, i) => `<i${lit.has(i) ? ' class="win"' : ""}></i>`).join("");
+  $("race-cap").innerHTML = r.beats
+    ? `${r.tracked} in the race · <b>${r.beats}</b> beating the market in testing`
+    : `${r.tracked} in the race · no winner right now, so nothing new gets bought.`;
+  $("funnel-asof").textContent = `As of ${fmtDate(r.as_of)}. The rest are losing, too close to call, or too new to judge. Strategies are added, dropped and re-tested all the time, and the methods keep evolving, so these numbers change.`;
 }
 
 function scoreboard() {
