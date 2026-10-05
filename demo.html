@@ -7,14 +7,14 @@
 <meta name="description" content="A public experiment: rules backed by daily research put 100% into one stock, called at 10am ET before the outcome. Every win and loss stays up.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="one-stock">
-<meta property="og:title" content="What does it take to pick the winning stock? One stock, all in, in public. Let's find out.">
+<meta property="og:title" content="What does it take to pick a winning stock? One stock, all in, in public. Let's find out.">
 <meta property="og:description" content="A public experiment: one stock, all in, called before the outcome. Every win and loss stays up.">
 <meta property="og:url" content="https://spillai13.github.io/one-stock/">
 <meta property="og:image" content="https://spillai13.github.io/one-stock/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="What does it take to pick the winning stock? One stock, all in, in public. Let's find out.">
+<meta name="twitter:title" content="What does it take to pick a winning stock? One stock, all in, in public. Let's find out.">
 <meta name="twitter:description" content="A public experiment: one stock, all in, called before the outcome. Every win and loss stays up.">
 <meta name="twitter:image" content="https://spillai13.github.io/one-stock/og.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -175,7 +175,7 @@ footer ul { padding-left: 18px; margin: 10px 0 0; } footer li { margin: 4px 0; }
   <!-- 1. The idea, in five seconds -->
   <div class="hero">
     <div class="eyebrow" id="eyebrow">A public experiment</div>
-    <h1 id="headline">What does it take to pick the winning stock?<br><em>One stock, all in, in public. Let's find out.</em></h1>
+    <h1 id="headline">What does it take to pick a winning stock?<br><em>One stock, all in, in public. Let's find out.</em></h1>
     <p class="lede" id="lede">Behind the scenes, a research system does the hard work,
       testing trading ideas against the market every day. Its rules then back one stock
       with conviction, putting in 100% of the money, as the best shot at the most growth in the least time.</p>
@@ -335,7 +335,7 @@ const fmtDate = s => new Date(s + "T12:00:00").toLocaleDateString("en-US", {mont
 const SITE = "https://spillai13.github.io/one-stock/";
 // Daily-call accounts. Empty until the poster is live; the page says "starting soon" meanwhile.
 const FOLLOW = {x: "", threads: ""};
-const SHARE_LINE = "What does it take to pick the winning stock? This public experiment is trying: one stock, all in, every result shown.";
+const SHARE_LINE = "What does it take to pick a winning stock? This public experiment is trying: one stock, all in, every result shown.";
 
 (function theme() {
   const root = document.documentElement;
@@ -366,7 +366,7 @@ function demoMode() {
     morning from ${fmtDate(DEMO.start)} to ${fmtDate(DEMO.end)}, seeing only what was known by then: the
     research results from the evening before, prices up to the previous close. Nothing here was called in advance,
     and the line is drawn dashed for that reason. <a href="index.html">The live record is here.</a></p>`;
-  $("headline").innerHTML = "What does it take to pick the winning stock?<br><em>Here's how these rules would have done.</em>";
+  $("headline").innerHTML = "What does it take to pick a winning stock?<br><em>Here's how these rules would have done.</em>";
   $("curve-label").textContent = "Growth of $1,000, replayed from";
   $("cards-title").textContent = "Each call, as the replay made it";
   $("cards-sub").textContent = "What the rules could see at 10:00 on each past morning, and what happened next.";
