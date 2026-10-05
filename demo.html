@@ -135,6 +135,14 @@ td.num { text-align: right; } th.num { text-align: right; }
 .share-band .ctas { justify-content: center; }
 .toast { position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%) translateY(20px); background: var(--ink); color: var(--bg);
   padding: 10px 16px; border-radius: 999px; font: 600 14px Inter; opacity: 0; transition: all .2s; pointer-events: none; }
+.sheet { position: fixed; inset: 0; background: rgba(0,0,0,.6); display: none; align-items: center; justify-content: center; padding: 16px; z-index: 50; }
+.sheet.on { display: flex; }
+.sheet .card { width: min(640px, 100%); padding: 18px; }
+.sheet img { width: 100%; border-radius: 10px; display: block; border: 1px solid var(--line); }
+.sheet .ctas { justify-content: center; margin-top: 14px; flex-wrap: wrap; }
+.sheet .muted { text-align: center; font-size: 13px; margin: 10px 0 0; }
+.sheet textarea { width: 100%; margin-top: 12px; min-height: 96px; resize: vertical; border-radius: 10px; padding: 10px 12px;
+  background: var(--surface-2); color: var(--ink); border: 1px solid var(--line); font: 15px/1.45 Inter, system-ui, sans-serif; }
 .toast.on { opacity: 1; transform: translateX(-50%) translateY(0); }
 footer { color: var(--ink-3); font-size: 13.5px; padding: 64px 0 48px; }
 footer ul { padding-left: 18px; margin: 10px 0 0; } footer li { margin: 4px 0; }
@@ -330,6 +338,20 @@ footer ul { padding-left: 18px; margin: 10px 0 0; } footer li { margin: 4px 0; }
   </footer>
 </div>
 <div class="toast" id="toast"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Share card">
+  <div class="card">
+    <img id="sheet-img" alt="">
+    <textarea id="sheet-text" aria-label="Post text, edit it before sharing" placeholder="Following this one: one stock a day, fixed rules, every loss stays up."></textarea>
+    <div class="ctas">
+      <button class="btn primary" id="sheet-share">Share</button>
+      <button class="btn" id="sheet-save">Save image</button>
+      <button class="btn" id="sheet-x">Post on X</button>
+      <button class="btn" id="sheet-copy">Copy text</button>
+      <button class="btn" id="sheet-close">Close</button>
+    </div>
+    <p class="muted" id="sheet-note"></p>
+  </div>
+</div>
 
 <script>
 const DATA = {"built": "2026-10-04", "era_start": "2026-09-26", "first_pick": "2026-09-03", "trades": [{"date": "2026-09-08", "ticker": "FRSH", "name": "Freshworks Inc.", "fill_date": "2026-09-08", "fill": 12.1, "stop": 11.13, "target": 13.31, "d_eff": 14.6, "exit_date": "2026-09-23", "exit": 11.89, "exit_reason": "switch", "exit_price_date": "2026-09-11", "return_pct": -1.736, "excess_spy_pct": -1.977, "days_held": 11.0, "replaces": ""}, {"date": "2026-09-23", "ticker": "DOCS", "name": "Doximity, Inc.", "fill_date": "2026-09-23", "fill": 26.57, "stop": 24.44, "target": 31.35, "d_eff": 17.3, "exit_date": "2026-10-01", "exit": 28.5, "exit_reason": "switch", "exit_price_date": "2026-10-01", "return_pct": 7.264, "excess_spy_pct": 7.761, "days_held": 6.0, "replaces": "FRSH"}, {"date": "2026-10-01", "ticker": "DOCU", "name": "DocuSign, Inc.", "fill_date": "2026-10-01", "fill": 69.74, "stop": 64.16, "target": 76.71, "d_eff": 12.4, "exit_date": null, "exit": null, "exit_reason": null, "exit_price_date": null, "return_pct": null, "excess_spy_pct": null, "days_held": null, "replaces": "DOCS"}], "curve": [{"d": "2026-09-03", "t": 1000.0, "s": 1000.0}, {"d": "2026-09-04", "t": 1000.0, "s": 996.15}, {"d": "2026-09-08", "t": 1000.0, "s": 990.67}, {"d": "2026-09-09", "t": 985.95, "s": 986.07}, {"d": "2026-09-10", "t": 980.99, "s": 980.16}, {"d": "2026-09-11", "t": 982.64, "s": 988.51}, {"d": "2026-09-14", "t": 982.64, "s": 984.1}, {"d": "2026-09-15", "t": 982.64, "s": 979.59}, {"d": "2026-09-16", "t": 982.64, "s": 975.27}, {"d": "2026-09-17", "t": 982.64, "s": 986.33}, {"d": "2026-09-21", "t": 982.64, "s": 1000.43}, {"d": "2026-09-22", "t": 982.64, "s": 1000.27}, {"d": "2026-09-23", "t": 982.64, "s": 993.07}, {"d": "2026-09-24", "t": 963.04, "s": 992.25}, {"d": "2026-09-25", "t": 974.51, "s": 997.65}, {"d": "2026-09-28", "t": 968.96, "s": 990.22}, {"d": "2026-09-29", "t": 980.8, "s": 988.4}, {"d": "2026-09-30", "t": 1048.1, "s": 986.37}, {"d": "2026-10-01", "t": 1054.02, "s": 988.13}], "stats": {"decisions": 21, "closed": 2, "open": 1, "return_per_trade": null, "min_n": 5}, "rules": {"stop_pct": 0.08, "friction": 0.003, "mode": "virtual"}, "demo": {"start": "2026-09-03", "end": "2026-10-02", "accepted": "company name, sector, industry and market cap are today's values (the table keeps no history); a market-cap move across the $300M floor, an industry reclassification, or an earnings date reported after the replayed morning could differ from what was known then", "gaps": [{"ticker": "FRSH", "price_date": "2026-09-11", "exit_date": "2026-09-23"}]}, "research": {"as_of": "2026-10-02", "tracked": 57, "beats": 1, "judged": 8, "loses": 6}, "calls_ahead": ["2026-10-05T10:00:00-04:00", "2026-10-06T10:00:00-04:00", "2026-10-07T10:00:00-04:00", "2026-10-08T10:00:00-04:00", "2026-10-09T10:00:00-04:00", "2026-10-12T10:00:00-04:00"]};
@@ -341,6 +363,40 @@ const fmtDate = s => new Date(s + "T12:00:00").toLocaleDateString("en-US", {mont
 const SITE = "https://spillai13.github.io/one-stock/";
 // Daily-call accounts. Empty until the poster is live; the page says "starting soon" meanwhile.
 const FOLLOW = {x: "", threads: ""};
+// A Robinhood Social post for the open position, if one exists. Empty: no "verified" badge on the share card.
+const VERIFIED = {robinhood: ""};
+// Share text voice (node-eval 2026-10-04, share-text-voice): the rules, deadpan. One line per
+// state is picked at random; labels() is always appended, so no line carries the caveats itself.
+// tests/test_publish.py reads this block: no claims, no advice, no "before the outcome" until
+// the poster is live. A new state's lines are written when it can first happen, owner-approved.
+const VOICE = /*VOICE*/{
+  "new": [
+    "10am ET: the rules picked {who}. All in. The rules don't explain themselves and don't take it back.",
+    "New pick: {tkr}, named at 10am ET, bought at the close. Fixed rules, no hunches, every result stays up."
+  ],
+  "up": [
+    "Day {days} holding {tkr}: {ret}. S&P 500: {spx}. The rules have not noticed.",
+    "Still holding {tkr}: {ret} in {days} trading days, S&P 500 {spx}. One stock tells you nothing yet."
+  ],
+  "down": [
+    "The rules picked {tkr}. {tkr} disagreed: {ret} so far. Every loss stays up.",
+    "Day {days} holding {tkr}: {ret}. S&P 500: {spx}. This stays on the page either way."
+  ],
+  "win": [
+    "Sold {tkr}: {ret} in {days} trading days, {vs} vs the S&P 500. One win. Logged, not celebrated.",
+    "Trade {k} is done: {tkr} {ret}. That's one data point, not a strategy."
+  ],
+  "loss": [
+    "Sold {tkr}: {ret} in {days} trading days ({vs} vs the S&P 500). Loss logged. It stays up.",
+    "{tkr} didn't work: {ret}. It sits on the record next to everything else."
+  ],
+  "cash": [
+    "Today's pick: nothing. The rules found nothing that clears the bar, so it's cash. Sitting out is on the record too."
+  ],
+  "five": [
+    "Trade {k} of {min} is done: {tkr} {ret}. Officially no longer 'too early to tell'. Now it's just 'early'."
+  ]
+}/*/VOICE*/;
 const SHARE_LINE = "What does it take to pick a winning stock? This public experiment is trying: one stock, all in, every result shown.";
 
 (function theme() {
@@ -628,23 +684,136 @@ function shareText(kind, date) {
   if (kind !== "call") return {text: SHARE_LINE, url: SITE};
   const tr = DATA.trades.find(t => t.date === date);
   const who = tr.name ? `${tr.name} (${tr.ticker})` : tr.ticker;
-  return {text: `On ${fmtDate(tr.date)} at 10am ET, fixed rules picked ${who}. Sell if it falls to ${usd(tr.stop)}, aiming for ${usd(tr.target)}. Written down before the outcome. Watch it play out:`, url: SITE + "#call-" + tr.date};
+  return {text: `On ${fmtDate(tr.date)} at 10am ET, fixed rules picked ${who}. Sell if it falls to ${usd(tr.stop)}, aiming for ${usd(tr.target)}. Watch it play out:`, url: SITE + "#call-" + tr.date};
 }
 document.addEventListener("click", async e => {
   const b = e.target.closest("[data-share]");
   if (!b) return;
   const kind = b.dataset.share, s = shareText(kind, b.dataset.date), both = s.text + " " + s.url;
   const enc = encodeURIComponent;
-  if ((kind === "page" || kind === "call") && navigator.share) {
-    try { await navigator.share({title: "one-stock", text: s.text, url: s.url}); } catch (err) {}
-    return;
-  }
+  if (kind === "page" || kind === "call") return openCard(kind === "call" ? DATA.trades.find(t => t.date === b.dataset.date) : held(), s);
   if (kind === "whatsapp") return window.open("https://wa.me/?text=" + enc(both), "_blank", "noopener");
   if (kind === "x") return window.open(`https://x.com/intent/post?text=${enc(s.text)}&url=${enc(s.url)}`, "_blank", "noopener");
   if (kind === "threads") return window.open("https://www.threads.net/intent/post?text=" + enc(both), "_blank", "noopener");
   try { await navigator.clipboard.writeText(kind === "copy" ? s.url : both); toast(kind === "copy" ? "Link copied" : "Copied. Paste it anywhere"); }
   catch (err) { prompt("Copy this:", both); }
 });
+
+// Share card: a 1200x630 image drawn here from the same record the page shows. Nothing new is published.
+// An open position's gain, days and S&P comparison come from the daily curve (100% in, so the curve is the position).
+function position(tr) {
+  if (!tr) return null;
+  if (tr.exit_date) return {ret: tr.return_pct, vs: tr.excess_spy_pct, days: tr.days_held, open: false, asOf: tr.exit_date};
+  const c = DATA.curve, i = c.findIndex(p => p.d === (tr.fill_date || tr.date)), last = c[c.length - 1];
+  if (i < 0 || !last) return {ret: null, vs: null, days: 0, open: true, asOf: null};
+  const ret = (last.t / c[i].t - 1) * 100, spx = (last.s / c[i].s - 1) * 100;
+  return {ret, spx, vs: ret - spx, days: c.length - 1 - i, open: true, asOf: last.d};
+}
+
+function drawCard(tr) {
+  const W = 1200, H = 630, cv = document.createElement("canvas");
+  cv.width = W; cv.height = H;
+  const g = cv.getContext("2d");
+  const C = {bg: "#0c0d0f", ink: "#f4f4f2", ink2: "#b9bab4", ink3: "#7d7f7a", line: "#2a2e33", good: "#1baf7a", bad: "#e66767", blue: "#3987e5"};
+  const font = (w, px, mono) => `${w} ${px}px ${mono ? "'JetBrains Mono', monospace" : "Inter, system-ui, sans-serif"}`;
+  const text = (t, x, y, f, col, align) => { g.font = f; g.fillStyle = col; g.textAlign = align || "left"; g.fillText(t, x, y); return g.measureText(t).width; };
+  const signed = v => v == null ? "-" : pct(v);
+  g.fillStyle = C.bg; g.fillRect(0, 0, W, H);
+  g.fillStyle = C.blue; g.fillRect(0, 0, W, 8);
+
+  // Header: brand left, status right
+  const bw = text("one", 64, 84, font(800, 30), C.ink);
+  text("-stock", 64 + bw, 84, font(800, 30), C.blue);
+  text("A public experiment", 64, 116, font(500, 20), C.ink3);
+  const p = position(tr);
+  const status = !tr ? (DATA.first_pick ? "IN CASH" : "STARTING") : p.open ? "OPEN · 100% IN" : "CLOSED";
+  const sw = text(status, W - 64, 84, font(700, 20), p && p.open ? C.good : C.ink2, "right");
+  if (p && p.open) { g.fillStyle = C.good; g.beginPath(); g.arc(W - 64 - sw - 18, 77, 7, 0, 7); g.fill(); }
+
+  const c = DATA.curve, last = c[c.length - 1];
+  const tot = last ? (last.t / 1000 - 1) * 100 : null, spxTot = last ? (last.s / 1000 - 1) * 100 : null;
+  if (tr) {
+    // Ticker, name, big return
+    text(tr.ticker, 64, 250, font(800, 112), C.ink);
+    if (tr.name) text(tr.name, 68, 296, font(500, 26), C.ink2);
+    if (p.ret != null) {
+      text(signed(p.ret), W - 64, 250, font(800, 112), p.ret >= 0 ? C.good : C.bad, "right");
+      text(p.open ? `since buying · ${p.days} trading day${p.days === 1 ? "" : "s"}` : `${ENDED[tr.exit_reason] || "Closed"} · ${p.days} trading days`, W - 64, 296, font(500, 24), C.ink2, "right");
+    }
+    // Stat row
+    const stats = [
+      ["vs S&P 500", p.vs == null ? "-" : (p.vs >= 0 ? "+" : "") + p.vs.toFixed(2) + " pts", p.vs == null ? C.ink : p.vs >= 0 ? C.good : C.bad],
+      ["Called", `${fmtDate(tr.date)}, 10am ET`, C.ink],
+      ["Bought at", tr.fill ? usd(tr.fill) : "the close", C.ink],
+      ["Record so far", tot == null ? "-" : `${signed(tot)} vs S&P ${signed(spxTot)}`, C.ink],
+    ];
+    g.fillStyle = C.line; g.fillRect(64, 350, W - 128, 1);
+    const colW = (W - 128) / stats.length;
+    stats.forEach(([k, v, col], i) => {
+      text(k.toUpperCase(), 64 + i * colW, 398, font(600, 17), C.ink3);
+      text(v, 64 + i * colW, 438, font(700, i === 3 ? 22 : 28), col);
+    });
+  } else {
+    text(DATA.first_pick ? "In cash" : "First call soon", 64, 260, font(800, 96), C.ink);
+    if (tot != null) text(`Record so far: ${signed(tot)} vs S&P 500 ${signed(spxTot)}`, 64, 320, font(600, 30), C.ink2);
+  }
+
+  // Footer: the question, the link, the honest labels
+  g.fillStyle = C.line; g.fillRect(64, 480, W - 128, 1);
+  text("What does it take to pick a winning stock?", 64, 526, font(700, 28), C.ink);
+  text(SITE.replace("https://", ""), 64, 564, font(600, 22, true), C.blue);
+  const early = DATA.stats.closed < MIN_N ? `${DATA.stats.closed} of ${MIN_N} trades finished, too early to tell · ` : "";
+  const asOf = p && p.asOf ? `As of ${fmtDate(p.asOf)} close · ` : "";
+  text(`${asOf}${early}Pretend money, closing prices, before costs. Not advice.`, 64, 600, font(500, 17), C.ink3);
+  if (VERIFIED.robinhood && p && p.open) text("✓ Verified trade on Robinhood", W - 64, 564, font(700, 20), C.good, "right");
+  return cv;
+}
+
+let cardBlob = null;
+
+// The honesty labels ride on every share text, whatever line was picked or edited in.
+function labels() {
+  const money = DATA.rules.mode === "virtual" ? "Pretend money." : "";
+  const early = DATA.stats.closed < MIN_N ? `${DATA.stats.closed} of ${MIN_N} finished. Too early to tell.` : "";
+  return [money, early].filter(Boolean).join(" ");
+}
+
+function shareLine(tr) {
+  const pick = a => a[Math.floor(Math.random() * a.length)];
+  if (!tr) return DATA.first_pick ? pick(VOICE.cash) : SHARE_LINE;
+  const p = position(tr), sign = v => v == null ? "-" : pct(v);
+  const k = DATA.trades.filter(t => t.exit_date && t.exit_date <= (tr.exit_date || "")).length;
+  const state = !p.open ? (k === MIN_N ? "five" : p.ret >= 0 ? "win" : "loss")
+    : p.ret == null || p.days === 0 ? "new" : p.ret >= 0 ? "up" : "down";
+  const v = {who: tr.name ? `${tr.name} (${tr.ticker})` : tr.ticker, tkr: tr.ticker, ret: sign(p.ret), spx: sign(p.spx),
+    vs: p.vs == null ? "-" : (p.vs >= 0 ? "+" : "") + p.vs.toFixed(2) + " pts", days: p.days, k, min: MIN_N};
+  return pick(VOICE[state]).replace(/\{(\w+)\}/g, (_, key) => v[key]);
+}
+async function openCard(tr, s) {
+  try { await Promise.all([document.fonts.load("800 112px Inter"), document.fonts.load("600 22px 'JetBrains Mono'")]); } catch (e) {}
+  const text = shareLine(tr) + " " + labels() + " " + (tr ? SITE + "#call-" + tr.date : s.url)
+    + (VERIFIED.robinhood && tr && !tr.exit_date ? " Verified trade: " + VERIFIED.robinhood : "");
+  $("sheet-text").value = text;
+  const cv = drawCard(tr);
+  $("sheet-img").src = cv.toDataURL("image/png");
+  $("sheet-img").alt = text;
+  cardBlob = await new Promise(r => cv.toBlob(r, "image/png"));
+  const cardText = () => $("sheet-text").value.trim();
+  const file = new File([cardBlob], "one-stock.png", {type: "image/png"});
+  const canFile = navigator.canShare && navigator.canShare({files: [file]});
+  $("sheet-share").style.display = canFile || navigator.share ? "" : "none";
+  $("sheet-note").textContent = canFile ? "" : "To post the card on X, save the image and attach it to the post.";
+  $("sheet-share").onclick = async () => {
+    try { await navigator.share(canFile ? {files: [file], text: cardText()} : {title: "one-stock", text: cardText()}); } catch (e) {}
+  };
+  $("sheet-save").onclick = () => { const a = document.createElement("a"); a.href = URL.createObjectURL(cardBlob); a.download = `one-stock-${tr ? tr.ticker : "record"}.png`; a.click(); };
+  $("sheet-x").onclick = () => window.open("https://x.com/intent/post?text=" + encodeURIComponent(cardText()), "_blank", "noopener");
+  $("sheet-copy").onclick = async () => { try { await navigator.clipboard.writeText(cardText()); toast("Copied. Paste it anywhere"); } catch (e) { prompt("Copy this:", cardText()); } };
+  $("sheet").classList.add("on");
+}
+$("sheet-close").onclick = () => $("sheet").classList.remove("on");
+$("sheet").onclick = e => { if (e.target.id === "sheet") $("sheet").classList.remove("on"); };
+document.addEventListener("keydown", e => { if (e.key === "Escape") $("sheet").classList.remove("on"); });
 
 demoMode(); hero(); why(); funnel(); scoreboard(); draw(); cards(); shortlist(); ledger(); fineprint();
 $("play").onclick = play;
