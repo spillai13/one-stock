@@ -84,7 +84,13 @@ h2 { font-size: clamp(26px, 3.6vw, 34px); letter-spacing: -0.025em; margin: 0 0 
 .race { display: grid; grid-template-columns: 1fr 1.25fr; gap: 28px; align-items: center; }
 .dots { display: flex; flex-wrap: wrap; gap: 7px; }
 .dots i { width: 18px; height: 18px; border-radius: 50%; background: var(--line); }
-.dots i.win { background: var(--good); box-shadow: 0 0 0 4px color-mix(in srgb, var(--good) 25%, transparent); }
+.dots i.win { background: var(--good); animation: pulse 2.2s infinite; }
+/* "Live" marker: only on things that really are current (the holding, the newest point,
+   the strategies winning now, the countdown). Never in the replay. */
+.live { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--good);
+  margin-right: 9px; vertical-align: 1px; animation: pulse 2.2s infinite; }
+.demo .live { display: none; }
+@media (prefers-reduced-motion: reduce) { .dot, .live, .dots i.win { animation: none; } }
 .race-cap { font: 700 20px/1.3 Inter; margin-top: 16px; letter-spacing: -0.01em; }
 .race-cap b { color: var(--good); }
 .rsteps { display: flex; flex-direction: column; gap: 14px; }
@@ -350,6 +356,7 @@ const SHARE_LINE = "What does it take to pick a winning stock? This public exper
 })();
 
 const DEMO = DATA.demo || null;
+const REDUCED = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
 const MIN_N = DATA.stats.min_n;
 const EARLY = DATA.stats.closed < MIN_N;
 
@@ -388,14 +395,15 @@ function hero() {
   $("eyebrow").textContent = DEMO ? `Replay · ${days} past trading days`
     : DATA.first_pick ? `A public experiment · Day ${days}` : "A public experiment · Day 0";
   $("status").textContent = DEMO ? "Replay" : DATA.first_pick ? "Live" : "Starting";
-  $("st-now").textContent = h
+  const live = DEMO ? "" : '<span class="live"></span>';
+  $("st-now").innerHTML = live + esc(h
     ? `${DEMO ? "Ended holding" : "Holding"} ${h.name || h.ticker}${h.name ? " (" + h.ticker + ")" : ""} since ${fmtDate(h.fill_date || h.date)}`
-    : DATA.first_pick ? "In cash: nothing cleared the bar" : "First call: next trading morning, 10am ET";
+    : DATA.first_pick ? "In cash: nothing cleared the bar" : "First call: next trading morning, 10am ET");
   $("st-early").textContent = EARLY
     ? `Too early to tell if this works: ${DATA.stats.closed} of ${MIN_N} trades finished`
     : `${DATA.stats.closed} trades finished`;
   $("pick").innerHTML = h
-    ? `${DEMO ? "Where the replay ended" : "Today's pick, 100% in"}<b>${esc(h.name || h.ticker)}${h.name ? " (" + esc(h.ticker) + ")" : ""}</b>`
+    ? `${DEMO ? "Where the replay ended" : '<span class="live"></span>Today\'s pick, 100% in'}<b>${esc(h.name || h.ticker)}${h.name ? " (" + esc(h.ticker) + ")" : ""}</b>`
     : DATA.first_pick ? `Today's pick<b>Cash: nothing cleared the bar</b>` : "";
   if (!DEMO) countdown();
 }
@@ -409,11 +417,11 @@ function countdown() {
     const next = ahead.map(a => ({d: a.slice(0, 10), t: Date.parse(a)})).find(x => x.t > now);
     if (!next) { $("st-next").textContent = ""; return; }
     const s = Math.max(0, Math.floor((next.t - now) / 1000));
-    const hh = Math.floor(s / 3600), mm = Math.floor(s % 3600 / 60);
+    const hh = Math.floor(s / 3600), mm = Math.floor(s % 3600 / 60), ss = s % 60;
     const day = new Date(next.d + "T12:00:00").toLocaleDateString("en-US", {weekday: "short", month: "short", day: "numeric"});
-    $("st-next").textContent = `Next call in ${hh}h ${String(mm).padStart(2, "0")}m · ${day}, 10am ET`;
+    $("st-next").textContent = `Next call in ${hh}h ${String(mm).padStart(2, "0")}m ${String(ss).padStart(2, "0")}s · ${day}, 10am ET`;
   };
-  tick(); setInterval(tick, 30000);
+  tick(); setInterval(tick, 1000);
 }
 
 function why() {
@@ -507,7 +515,10 @@ function draw(upto) {
   });
   svg.insertAdjacentHTML("beforeend", marks.join(""));
   svg.insertAdjacentHTML("beforeend",
-    `<circle cx="${x(n)}" cy="${y(c[n].t)}" r="5" fill="var(--trader)" stroke="var(--surface)" stroke-width="2"/>
+    `${upto == null && !DEMO && !REDUCED ? `<circle cx="${x(n)}" cy="${y(c[n].t)}" r="5" fill="none" stroke="var(--trader)" stroke-width="2">
+       <animate attributeName="r" values="5;16" dur="2.2s" repeatCount="indefinite"/>
+       <animate attributeName="opacity" values=".7;0" dur="2.2s" repeatCount="indefinite"/></circle>` : ""}
+     <circle cx="${x(n)}" cy="${y(c[n].t)}" r="5" fill="var(--trader)" stroke="var(--surface)" stroke-width="2"/>
      <text x="${x(n) + 10}" y="${y(c[n].t) + 4}" fill="var(--ink)" font-size="13" font-weight="600">${usd(c[n].t)}</text>
      <text x="${x(n) + 10}" y="${y(c[n].s) + (Math.abs(y(c[n].s) - y(c[n].t)) < 16 ? 18 : 4)}" fill="var(--ink-2)" font-size="13">${usd(c[n].s)}</text>
      <line id="xh" y1="${P.t}" y2="${H - P.b}" stroke="var(--ink-3)" stroke-width="1" opacity="0"/>
@@ -563,7 +574,7 @@ function cards() {
       ? ` · priced at the last available close (${fmtDate(tr.exit_price_date)}) because the price feed stopped` : "";
     return `<div class="card tcard" id="call-${esc(tr.date)}">
       <div class="top"><div><div class="tk">${esc(tr.ticker)}</div>${tr.name ? `<div class="muted">${esc(tr.name)}</div>` : ""}<div class="when">Called ${fmtDate(tr.date)}, 10am ET${tr.replaces ? " · replaced " + esc(tr.replaces.split(":").pop()) : ""}</div></div>
-        <div class="ret ${cls}">${r == null ? "open" : pct(r)}</div></div>
+        <div class="ret ${cls}">${r == null ? (DEMO ? "open" : '<span class="live"></span>open') : pct(r)}</div></div>
       ${tr.edge == null ? "" : `<div class="knew">
         <div><div class="k">Shortlist</div><div class="v">${esc(funnel[0] || "-")} → ${esc(funnel[funnel.length - 1] || "-")}</div></div>
         <div><div class="k">Edge / day</div><div class="v">${tr.edge ? (tr.edge * 100).toFixed(2) + "%" : "-"}</div></div>
