@@ -82,10 +82,9 @@ h1 .accent { color: var(--trader); }
 section { padding: 64px 0 0; }
 h2 { font-size: clamp(26px, 3.6vw, 34px); letter-spacing: -0.025em; margin: 0 0 8px; line-height: 1.15; }
 .sub { color: var(--ink-2); margin: 0 0 24px; max-width: 680px; }
-.why { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
-.why .num { font: 800 44px/1 Inter; letter-spacing: -0.03em; color: var(--trader); margin-bottom: 10px; }
-.why h3 { margin: 0 0 6px; font-size: 18px; letter-spacing: -0.01em; }
-.why p { margin: 0; color: var(--ink-2); font-size: 15px; }
+.faq { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+.faq h3 { margin: 0 0 8px; font-size: 18px; letter-spacing: -0.01em; }
+.faq p { margin: 0; color: var(--ink-2); font-size: 15px; }
 /* The funnel: each row's bar width is its share of what was tracked. */
 .race { display: grid; grid-template-columns: 1fr 1.25fr; gap: 28px; align-items: center; }
 .dots { display: flex; flex-wrap: wrap; gap: 7px; }
@@ -175,7 +174,7 @@ footer ul { padding-left: 18px; margin: 10px 0 0; } footer li { margin: 4px 0; }
 .muted { color: var(--ink-3); font-size: 13px; }
 @media (max-width: 760px) {
   .wrap { padding: 0 16px; }
-  .cards, .why, .scoreboard, .rules { grid-template-columns: 1fr; }
+  .cards, .faq, .scoreboard, .rules { grid-template-columns: 1fr; }
   .race { grid-template-columns: 1fr; }
   .hide-sm { display: none; }
 }
@@ -262,17 +261,23 @@ footer ul { padding-left: 18px; margin: 10px 0 0; } footer li { margin: 4px 0; }
     </div>
   </section>
 
-  <!-- 3. Why a public experiment -->
+  <!-- 3. The why questions -->
   <section id="why">
-    <h2>Why a public experiment</h2>
-    <p class="sub">Anyone can explain yesterday's winners. The only honest test is calling them first and showing every result.</p>
-    <div class="why">
-      <div class="card"><div class="num" id="w-lose">6 of 8</div><h3>Hindsight makes it look easy</h3>
-        <p id="w-lose-p">Look back at any chart and the winners are obvious. Looking forward, almost nobody can tell. Most strategies that look smart on paper do worse than simply buying the whole market.</p></div>
-      <div class="card"><div class="num">Max</div><h3>Why not just buy an index fund?</h3>
+    <h2>Why it works this way</h2>
+    <p class="sub">The questions people ask first, answered plainly.</p>
+    <div class="faq">
+      <div class="card"><h3>Why one stock?</h3>
+        <p>Spread the money across twenty stocks and you've built a small index fund: you get roughly the average. The idea here is the opposite. Put everything in the single stock with the best shot at the most growth in the least time. If it's the right one, that beats the average by a lot. The catch: one stock swings much harder than many, both ways.</p></div>
+      <div class="card"><h3>Why not just buy an index fund?</h3>
         <p>For your savings, you should. An index fund gets you the market's average, the grey line on the chart. One stock, if it's the right one, gets you far more than the average. Whether the rules can find it often enough is what this experiment tests. If the blue line can't beat the grey one, the index fund wins, and this page will say so.</p></div>
-      <div class="card"><div class="num">All</div><h3>Out in the open</h3>
-        <p>Every pick is written down at 10am ET and stays on this page. Wins and losses sit side by side.</p></div>
+      <div class="card"><h3>Why every day?</h3>
+        <p>It checks every day; it doesn't trade every day. Most days the answer is "keep". Time matters as much as the gain: 10% in two weeks is worth far more than 10% in a year, because the money is free for the next pick sooner. So each morning it asks: is this still the best use of the money? If a better one shows up, it sells and switches.</p></div>
+      <div class="card"><h3>Why public?</h3>
+        <p>Anyone can explain yesterday's winners. The only honest test is calling them first. Every pick is written down at 10am ET, before the day's outcome is known, and stays on this page. Wins and losses sit side by side, and the record can't be quietly rewritten.</p></div>
+      <div class="card"><h3>Why not just test it on past data?</h3>
+        <p id="w-lose-p">Look back at any chart and the winners are obvious. Looking forward, almost nobody can tell. Most strategies that look smart on paper do worse than simply buying the whole market.</p></div>
+      <div class="card"><h3>Why sell at a set price?</h3>
+        <p>Before it buys, it sets the price that cuts the loss (<span id="w-stop">8%</span> below what it paid). Close below that and it's sold, no hoping it comes back. One bad stock can't sink the whole experiment, and nobody gets to change the rule after the fact.</p></div>
     </div>
   </section>
 
@@ -491,10 +496,10 @@ function countdown() {
 }
 
 function why() {
+  $("w-stop").textContent = Math.round(DATA.rules.stop_pct * 100) + "%";
   const r = DATA.research;
   if (!r) return;
-  $("w-lose").textContent = `${r.loses} of ${r.judged}`;
-  $("w-lose-p").textContent = `Look back at any chart and the winners are obvious. Looking forward, almost nobody can tell: of the ${r.judged} ideas the research had enough data to judge, ${r.loses} did reliably worse than simply buying the whole market.`;
+  $("w-lose-p").textContent = `It was, and that's the problem. Look back at any chart and the winners are obvious; looking forward, almost nobody can tell. Of the ${r.judged} ideas the research had enough data to judge, ${r.loses} did reliably worse than simply buying the whole market. Only calls made in advance count.`;
 }
 
 function funnel() {
