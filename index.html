@@ -7,14 +7,14 @@
 <meta name="description" content="A computer tests dozens of strategies against the stock market every day. The winners pick one stock. Win or lose, every result stays up. Not investment advice.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="one-stock">
-<meta property="og:title" content="What if you could own the one stock with the biggest returns? A computer tries, with a pretend $1,000.">
+<meta property="og:title" content="What if you could own the one stock with the biggest returns? A computer tries, with $1,000 in virtual trades.">
 <meta property="og:description" content="A computer tests dozens of strategies against the stock market every day. The winners pick one stock. Win or lose, every result stays up. Not investment advice.">
 <meta property="og:url" content="https://spillai13.github.io/one-stock/">
 <meta property="og:image" content="https://spillai13.github.io/one-stock/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="What if you could own the one stock with the biggest returns? A computer tries, with a pretend $1,000.">
+<meta name="twitter:title" content="What if you could own the one stock with the biggest returns? A computer tries, with $1,000 in virtual trades.">
 <meta name="twitter:description" content="A computer tests dozens of strategies against the stock market every day. The winners pick one stock. Win or lose, every result stays up. Not investment advice.">
 <meta name="twitter:image" content="https://spillai13.github.io/one-stock/og.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -336,7 +336,7 @@ footer ul { padding-left: 18px; margin: 10px 0 0; } footer li { margin: 4px 0; }
   <footer>
     <div class="eyebrow">The fine print, in plain words</div>
     <ul>
-      <li>No real money is involved yet. Trades are pretend: bought and sold at the day's closing price, by the rules.</li>
+      <li>No real money is involved yet. Trades are virtual: bought and sold at the day's closing price, by the rules.</li>
       <li>Results don't include trading costs, which would take roughly <span id="f-friction"></span> off each buy-and-sell.</li>
       <li>Until at least <span id="f-min"></span> trades have finished, the page says "too early to tell" instead of guessing. Averages come with a range showing how sure the result is.</li>
       <li>The research counts are re-checked every day and change; the date they're from is shown next to them. "In the race" means the strategies being tested now, not every one ever tried.</li>
@@ -365,7 +365,7 @@ footer ul { padding-left: 18px; margin: 10px 0 0; } footer li { margin: 4px 0; }
 </div>
 
 <script>
-const DATA = {"built": "2026-10-06", "era_start": "2026-09-26", "first_pick": "2026-09-28", "trades": [{"date": "2026-09-28", "ticker": "DOCU", "name": "DocuSign, Inc.", "fill_date": "2026-09-28", "fill": 66.98, "stop": 61.62, "target": 73.68, "d_eff": 12.4, "exit_date": "2026-10-05", "exit": 70.03, "exit_reason": "invalidation", "exit_price_date": "2026-10-05", "return_pct": 4.554, "excess_spy_pct": 4.027, "days_held": 5.0, "replaces": ""}, {"date": "2026-10-06", "ticker": "ANF", "name": "Abercrombie & Fitch Company", "fill_date": null, "fill": null, "stop": 130.09, "target": 155.54, "d_eff": 5.0, "exit_date": null, "exit": null, "exit_reason": null, "exit_price_date": null, "return_pct": null, "excess_spy_pct": null, "days_held": null, "replaces": ""}], "curve": [{"d": "2026-09-28", "t": 1000.0, "s": 1000.0}, {"d": "2026-09-29", "t": 1000.0, "s": 998.16}, {"d": "2026-09-30", "t": 1002.54, "s": 996.11}, {"d": "2026-10-01", "t": 1041.21, "s": 997.88}, {"d": "2026-10-02", "t": 1030.31, "s": 1005.26}], "stats": {"decisions": 7, "closed": 1, "open": 1, "return_per_trade": null, "min_n": 5}, "rules": {"stop_pct": 0.08, "friction": 0.003, "mode": "virtual"}, "demo": null, "research": {"as_of": "2026-10-05", "tracked": 58, "beats": 1, "judged": 8, "loses": 6}, "calls_ahead": ["2026-10-06T10:00:00-04:00", "2026-10-07T10:00:00-04:00", "2026-10-08T10:00:00-04:00", "2026-10-09T10:00:00-04:00", "2026-10-12T10:00:00-04:00", "2026-10-13T10:00:00-04:00"]};
+const DATA = {"built": "2026-10-06", "era_start": "2026-09-26", "first_pick": "2026-09-28", "trades": [{"date": "2026-09-28", "ticker": "DOCU", "name": "DocuSign, Inc.", "fill_date": "2026-09-28", "fill": 66.98, "stop": 61.62, "target": 73.68, "d_eff": 12.4, "exit_date": "2026-10-05", "exit": 70.03, "exit_reason": "invalidation", "exit_price_date": "2026-10-05", "return_pct": 4.554, "excess_spy_pct": 3.35, "days_held": 5.0, "replaces": ""}, {"date": "2026-10-06", "ticker": "ANF", "name": "Abercrombie & Fitch Company", "fill_date": null, "fill": null, "stop": 130.09, "target": 155.54, "d_eff": 5.0, "exit_date": null, "exit": null, "exit_reason": null, "exit_price_date": null, "return_pct": null, "excess_spy_pct": null, "days_held": null, "replaces": ""}], "curve": [{"d": "2026-09-28", "t": 1000.0, "s": 1000.0}, {"d": "2026-09-29", "t": 1000.0, "s": 998.16}, {"d": "2026-09-30", "t": 1002.54, "s": 996.11}, {"d": "2026-10-01", "t": 1041.21, "s": 997.88}, {"d": "2026-10-02", "t": 1030.31, "s": 1005.26}, {"d": "2026-10-05", "t": 1045.54, "s": null}], "stats": {"decisions": 7, "closed": 1, "open": 1, "return_per_trade": null, "min_n": 5}, "rules": {"stop_pct": 0.08, "friction": 0.003, "mode": "virtual"}, "demo": null, "research": {"as_of": "2026-10-05", "tracked": 58, "beats": 1, "judged": 8, "loses": 6}, "calls_ahead": ["2026-10-06T10:00:00-04:00", "2026-10-07T10:00:00-04:00", "2026-10-08T10:00:00-04:00", "2026-10-09T10:00:00-04:00", "2026-10-12T10:00:00-04:00", "2026-10-13T10:00:00-04:00"]};
 const $ = id => document.getElementById(id);
 const esc = v => String(v ?? "").replace(/[&<>"']/g, ch => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[ch]));
 const usd = v => "$" + v.toLocaleString("en-US", {minimumFractionDigits: 2, maximumFractionDigits: 2});
@@ -408,7 +408,7 @@ const VOICE = /*VOICE*/{
     "Trade {k} of {min} is done: {tkr} {ret}. Officially no longer 'too early to tell'. Now it's just 'early'."
   ]
 }/*/VOICE*/;
-const SHARE_LINE = "What if you could own the one stock with the biggest returns? A computer is trying it with a pretend $1,000, against the stock market.";
+const SHARE_LINE = "What if you could own the one stock with the biggest returns? A computer is trying it with $1,000 in virtual trades, against the stock market.";
 
 (function theme() {
   const root = document.documentElement;
@@ -472,7 +472,7 @@ function hero() {
   const p = h ? position(h) : null;
   const gain = p && p.ret != null ? ` · <span class="${p.ret >= 0 ? "up" : "down"}">${pct(p.ret)}</span>` : "";
   $("pick").innerHTML = h
-    ? `<span class="lbl">${DEMO ? "Where the replay ended" : '<span class="live"></span>Holding now (pretend)'}</span>
+    ? `<span class="lbl">${DEMO ? "Where the replay ended" : '<span class="live"></span>Holding now (virtual)'}</span>
        <b>${esc(h.name || h.ticker)}${h.name ? " (" + esc(h.ticker) + ")" : ""}</b>
        <span class="meta">Since ${fmtDate(h.fill_date || h.date)}${gain}</span>`
     : DATA.first_pick ? `<span class="lbl">Holding now</span><b>Cash</b><span class="meta">Nothing cleared the bar today.</span>` : "";
@@ -514,12 +514,23 @@ function funnel() {
   $("funnel-asof").textContent = `As of ${fmtDate(r.as_of)}. The rest are losing, too close to call, or too new to judge. Strategies are added, dropped and re-tested all the time, and the methods keep evolving, so these numbers change.`;
 }
 
+// The S&P series is dated a trading day behind the stock prices by design (stocks P2.263), so the
+// latest day usually carries s = null, never a carried value.
+// Index of the last curve point that has an S&P value, at or before `upto`.
+function spyIdx(upto) {
+  const c = DATA.curve;
+  for (let i = upto == null ? c.length - 1 : upto; i >= 0; i--) if (c[i].s != null) return i;
+  return -1;
+}
+
 function scoreboard() {
-  const c = DATA.curve, last = c[c.length - 1];
-  const t = last ? last.t : 1000, s = last ? last.s : 1000;
+  const c = DATA.curve, last = c[c.length - 1], k = spyIdx();
+  const t = last ? last.t : 1000, s = k >= 0 ? c[k].s : 1000;
   countUp($("v-trader"), t); countUp($("v-spy"), s);
   $("s-trader").textContent = last ? pct((t / 1000 - 1) * 100) + " since " + fmtDate(c[0].d) : "Starts with the first call";
-  $("s-spy").textContent = last ? pct((s / 1000 - 1) * 100) + " over the same days" : "Same start, same days";
+  $("s-spy").textContent = !last ? "Same start, same days"
+    : k === c.length - 1 ? pct((s / 1000 - 1) * 100) + " over the same days"
+    : pct((s / 1000 - 1) * 100) + " through " + fmtDate(c[k].d) + " · the S&P figure updates a day later";
   $("v-days").textContent = `${DATA.stats.closed} of ${MIN_N}`;
   $("s-days").textContent = EARLY ? `needed before any verdict · ${DATA.stats.open} open now` : `${DATA.stats.open} open now`;
   $("since").textContent = DATA.first_pick ? fmtDate(DATA.first_pick) : "the first call";
@@ -557,7 +568,8 @@ function draw(upto) {
   }
   $("empty").textContent = "";
   const n = upto == null ? c.length - 1 : upto;
-  const vals = c.flatMap(p => [p.t, p.s]);
+  const vals = c.flatMap(p => [p.t, p.s]).filter(v => v != null);
+  const ns = spyIdx(n);
   let lo = Math.min(...vals, 1000), hi = Math.max(...vals, 1000);
   const pad = (hi - lo) * 0.12 || 10; lo -= pad; hi += pad;
   const x = i => P.l + (W - P.l - P.r) * i / (c.length - 1);
@@ -573,7 +585,7 @@ function draw(upto) {
          `<text x="${W - P.r}" y="${H - 8}" text-anchor="end">${fmtDate(last)}</text>`);
   svg.insertAdjacentHTML("beforeend", `<g class="grid axis">${g.join("")}</g>`);
   const seg = c.slice(0, n + 1);
-  const path = key => seg.map((p, i) => (i ? "L" : "M") + x(i).toFixed(1) + " " + y(p[key]).toFixed(1)).join(" ");
+  const path = key => seg.filter(p => p[key] != null).map((p, i) => (i ? "L" : "M") + x(i).toFixed(1) + " " + y(p[key]).toFixed(1)).join(" ");
   svg.insertAdjacentHTML("beforeend",
     `<path d="${path("s")}" fill="none" stroke="var(--spy)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
      <path id="tpath" d="${path("t")}" fill="none" stroke="var(--trader)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"${DEMO ? ' stroke-dasharray="7 5"' : ""}/>`);
@@ -591,7 +603,7 @@ function draw(upto) {
        <animate attributeName="opacity" values=".7;0" dur="2.2s" repeatCount="indefinite"/></circle>` : ""}
      <circle cx="${x(n)}" cy="${y(c[n].t)}" r="5" fill="var(--trader)" stroke="var(--surface)" stroke-width="2"/>
      <text x="${x(n) + 10}" y="${y(c[n].t) + 4}" fill="var(--ink)" font-size="13" font-weight="600">${usd(c[n].t)}</text>
-     <text x="${x(n) + 10}" y="${y(c[n].s) + (Math.abs(y(c[n].s) - y(c[n].t)) < 16 ? 18 : 4)}" fill="var(--ink-2)" font-size="13">${usd(c[n].s)}</text>
+     ${ns >= 0 ? `<text x="${x(ns) + 10}" y="${y(c[ns].s) + (ns === n && Math.abs(y(c[ns].s) - y(c[n].t)) < 16 ? 18 : 4)}" fill="var(--ink-2)" font-size="13">${usd(c[ns].s)}</text>` : ""}
      <line id="xh" y1="${P.t}" y2="${H - P.b}" stroke="var(--ink-3)" stroke-width="1" opacity="0"/>
      <rect x="${P.l}" y="0" width="${W - P.l - P.r}" height="${H}" fill="transparent" id="hit"/>`);
   if (upto == null && !draw.done && !DEMO) {
@@ -608,7 +620,7 @@ function draw(upto) {
     const h = DATA.trades.find(t => t.fill_date && t.fill_date <= c[i].d && (!t.exit_date || t.exit_date > c[i].d));
     tip.innerHTML = `<div style="color:var(--ink-3)">${fmtDate(c[i].d)}${h ? " · holding " + esc(h.ticker) : " · cash"}</div>
       <div><span class="swatch" style="background:var(--trader)"></span>one-stock <b>${usd(c[i].t)}</b></div>
-      <div><span class="swatch" style="background:var(--spy)"></span>S&amp;P 500 <b>${usd(c[i].s)}</b></div>`;
+      <div><span class="swatch" style="background:var(--spy)"></span>S&amp;P 500 <b>${c[i].s == null ? "not in yet" : usd(c[i].s)}</b></div>`;
     tip.style.opacity = 1;
     tip.style.left = Math.min(r.width - 190, x(i) * r.width / W + 12) + "px";
     tip.style.top = "64px";
@@ -623,7 +635,7 @@ function play() {
   const step = Math.max(40, Math.min(400, 6000 / c.length));
   playing = setInterval(() => {
     draw(i); $("playhead").textContent = fmtDate(c[i].d);
-    $("v-trader").textContent = usd(c[i].t); $("v-spy").textContent = usd(c[i].s);
+    $("v-trader").textContent = usd(c[i].t); if (c[i].s != null) $("v-spy").textContent = usd(c[i].s);
     if (++i >= c.length) { clearInterval(playing); playing = null; $("play").textContent = "↻ Play again"; }
   }, step);
 }
@@ -721,8 +733,10 @@ function position(tr) {
   if (tr.exit_date) return {ret: tr.return_pct, vs: tr.excess_spy_pct, days: tr.days_held, open: false, asOf: tr.exit_date};
   const c = DATA.curve, i = c.findIndex(p => p.d === (tr.fill_date || tr.date)), last = c[c.length - 1];
   if (i < 0 || !last) return {ret: null, vs: null, days: 0, open: true, asOf: null};
-  const ret = (last.t / c[i].t - 1) * 100, spx = (last.s / c[i].s - 1) * 100;
-  return {ret, spx, vs: ret - spx, days: c.length - 1 - i, open: true, asOf: last.d};
+  // No S&P for the latest day: no comparison, rather than one over a shorter window.
+  const ret = (last.t / c[i].t - 1) * 100;
+  const spx = last.s != null && c[i].s != null ? (last.s / c[i].s - 1) * 100 : null;
+  return {ret, spx, vs: spx == null ? null : ret - spx, days: c.length - 1 - i, open: true, asOf: last.d};
 }
 
 function drawCard(tr) {
@@ -746,7 +760,7 @@ function drawCard(tr) {
   if (p && p.open) { g.fillStyle = C.good; g.beginPath(); g.arc(W - 64 - sw - 18, 77, 7, 0, 7); g.fill(); }
 
   const c = DATA.curve, last = c[c.length - 1];
-  const tot = last ? (last.t / 1000 - 1) * 100 : null, spxTot = last ? (last.s / 1000 - 1) * 100 : null;
+  const tot = last ? (last.t / 1000 - 1) * 100 : null, spxTot = last && last.s != null ? (last.s / 1000 - 1) * 100 : null;
   if (tr) {
     // Ticker, name, big return
     text(tr.ticker, 64, 250, font(800, 112), C.ink);
@@ -779,7 +793,7 @@ function drawCard(tr) {
   text(SITE.replace("https://", ""), 64, 564, font(600, 22, true), C.blue);
   const early = DATA.stats.closed < MIN_N ? `${DATA.stats.closed} of ${MIN_N} picks finished, too early to tell · ` : "";
   const asOf = p && p.asOf ? `As of ${fmtDate(p.asOf)} close · ` : "";
-  text(`${asOf}${early}Pretend money, closing prices, before costs. Not advice.`, 64, 600, font(500, 17), C.ink3);
+  text(`${asOf}${early}Virtual trades, not real money. Closing prices, before costs. Not advice.`, 64, 600, font(500, 17), C.ink3);
   if (VERIFIED.robinhood && p && p.open) text("✓ Verified trade on Robinhood", W - 64, 564, font(700, 20), C.good, "right");
   return cv;
 }
@@ -788,7 +802,7 @@ let cardBlob = null;
 
 // The honesty labels ride on every share text, whatever line was picked or edited in.
 function labels() {
-  const money = DATA.rules.mode === "virtual" ? "Pretend money." : "";
+  const money = DATA.rules.mode === "virtual" ? "Virtual trades, not real money." : "";
   const early = DATA.stats.closed < MIN_N ? `${DATA.stats.closed} of ${MIN_N} finished. Too early to tell.` : "";
   return [money, early].filter(Boolean).join(" ");
 }
@@ -800,7 +814,7 @@ function shareLine(tr) {
   const k = DATA.trades.filter(t => t.exit_date && t.exit_date <= (tr.exit_date || "")).length;
   const state = !p.open ? (k === MIN_N ? "five" : p.ret >= 0 ? "win" : "loss")
     : p.ret == null || p.days === 0 ? "new" : p.ret >= 0 ? "up" : "down";
-  const v = {who: tr.name ? `${tr.name} (${tr.ticker})` : tr.ticker, tkr: tr.ticker, ret: sign(p.ret), spx: sign(p.spx),
+  const v = {who: tr.name ? `${tr.name} (${tr.ticker})` : tr.ticker, tkr: tr.ticker, ret: sign(p.ret), spx: p.spx == null ? "not in yet" : pct(p.spx),
     vs: p.vs == null ? "-" : (p.vs >= 0 ? "+" : "") + p.vs.toFixed(2) + " pts", days: p.days, k, min: MIN_N};
   return pick(VOICE[state]).replace(/\{(\w+)\}/g, (_, key) => v[key]);
 }
