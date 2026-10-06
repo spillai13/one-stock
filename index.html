@@ -255,7 +255,7 @@ footer ul { padding-left: 18px; margin: 10px 0 0; } footer li { margin: 4px 0; }
     <div class="card" style="padding:4px 8px; overflow-x:auto">
       <table>
         <thead><tr><th>Called</th><th>Stock</th><th class="num">Bought at</th><th class="num hide-sm">Sell if it falls to</th>
-          <th class="num hide-sm">Aiming for</th><th>Ended</th><th class="num">Result</th></tr></thead>
+          <th class="num hide-sm">Aiming for</th><th class="num">Sold at</th><th>Ended</th><th class="num">Result</th></tr></thead>
         <tbody id="ledger"></tbody>
       </table>
     </div>
@@ -336,7 +336,7 @@ footer ul { padding-left: 18px; margin: 10px 0 0; } footer li { margin: 4px 0; }
   <footer>
     <div class="eyebrow">The fine print, in plain words</div>
     <ul>
-      <li>No real money is involved yet. Trades are virtual: bought and sold at the day's closing price, by the rules.</li>
+      <li>No real money is involved yet. Trades are virtual: bought at the first price after each call (about 10am ET), sold at the day's closing price, or at that same minute when switching to a new stock. Calls before Oct 7 were bought at the close.</li>
       <li>Results don't include trading costs, which would take roughly <span id="f-friction"></span> off each buy-and-sell.</li>
       <li>Until at least <span id="f-min"></span> trades have finished, the page says "too early to tell" instead of guessing. Averages come with a range showing how sure the result is.</li>
       <li>The research counts are re-checked every day and change; the date they're from is shown next to them. "In the race" means the strategies being tested now, not every one ever tried.</li>
@@ -365,7 +365,7 @@ footer ul { padding-left: 18px; margin: 10px 0 0; } footer li { margin: 4px 0; }
 </div>
 
 <script>
-const DATA = {"built": "2026-10-06", "era_start": "2026-09-26", "first_pick": "2026-09-28", "trades": [{"date": "2026-09-28", "ticker": "DOCU", "name": "DocuSign, Inc.", "fill_date": "2026-09-28", "fill": 66.98, "stop": 61.62, "target": 73.68, "d_eff": 12.4, "exit_date": "2026-10-05", "exit": 70.03, "exit_reason": "invalidation", "exit_price_date": "2026-10-05", "return_pct": 4.554, "excess_spy_pct": 3.35, "days_held": 5.0, "replaces": ""}, {"date": "2026-10-06", "ticker": "ANF", "name": "Abercrombie & Fitch Company", "fill_date": null, "fill": null, "stop": 130.09, "target": 155.54, "d_eff": 5.0, "exit_date": null, "exit": null, "exit_reason": null, "exit_price_date": null, "return_pct": null, "excess_spy_pct": null, "days_held": null, "replaces": ""}], "curve": [{"d": "2026-09-28", "t": 1000.0, "s": 1000.0}, {"d": "2026-09-29", "t": 1000.0, "s": 998.16}, {"d": "2026-09-30", "t": 1002.54, "s": 996.11}, {"d": "2026-10-01", "t": 1041.21, "s": 997.88}, {"d": "2026-10-02", "t": 1030.31, "s": 1005.26}, {"d": "2026-10-05", "t": 1045.54, "s": 1012.04}], "stats": {"decisions": 7, "closed": 1, "open": 1, "return_per_trade": null, "min_n": 5}, "rules": {"stop_pct": 0.08, "friction": 0.003, "mode": "virtual"}, "demo": null, "research": {"as_of": "2026-10-05", "tracked": 58, "beats": 1, "judged": 8, "loses": 6}, "calls_ahead": ["2026-10-06T10:00:00-04:00", "2026-10-07T10:00:00-04:00", "2026-10-08T10:00:00-04:00", "2026-10-09T10:00:00-04:00", "2026-10-12T10:00:00-04:00", "2026-10-13T10:00:00-04:00"]};
+const DATA = {"built": "2026-10-06", "era_start": "2026-09-26", "first_pick": "2026-09-28", "trades": [{"date": "2026-09-28", "ticker": "DOCU", "name": "DocuSign, Inc.", "fill_date": "2026-09-28", "fill": 66.98, "stop": 61.62, "target": 73.68, "d_eff": 12.4, "exit_date": "2026-10-05", "exit": 70.03, "exit_reason": "invalidation", "exit_price_date": "2026-10-05", "return_pct": 4.554, "excess_spy_pct": 3.35, "days_held": 5.0, "replaces": ""}, {"date": "2026-10-06", "ticker": "ANF", "name": "Abercrombie & Fitch Company", "fill_date": null, "fill": null, "stop": 130.09, "target": 155.54, "d_eff": 5.0, "exit_date": null, "exit": null, "exit_reason": null, "exit_price_date": null, "return_pct": null, "excess_spy_pct": null, "days_held": null, "replaces": ""}], "curve": [{"d": "2026-09-28", "t": 1000.0, "s": 1000.0}, {"d": "2026-09-29", "t": 1000.0, "s": 998.16}, {"d": "2026-09-30", "t": 1002.54, "s": 996.11}, {"d": "2026-10-01", "t": 1041.21, "s": 997.88}, {"d": "2026-10-02", "t": 1030.31, "s": 1005.26}, {"d": "2026-10-05", "t": 1045.54, "s": 1012.04}], "stats": {"decisions": 7, "closed": 1, "open": 1, "return_per_trade": null, "min_n": 5}, "rules": {"stop_pct": 0.08, "friction": 0.003, "mode": "virtual", "minute_fill_from": "2026-10-07"}, "demo": null, "research": {"as_of": "2026-10-05", "tracked": 58, "beats": 1, "judged": 8, "loses": 6}, "calls_ahead": ["2026-10-06T10:00:00-04:00", "2026-10-07T10:00:00-04:00", "2026-10-08T10:00:00-04:00", "2026-10-09T10:00:00-04:00", "2026-10-12T10:00:00-04:00", "2026-10-13T10:00:00-04:00"]};
 const $ = id => document.getElementById(id);
 const esc = v => String(v ?? "").replace(/[&<>"']/g, ch => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[ch]));
 const usd = v => "$" + v.toLocaleString("en-US", {minimumFractionDigits: 2, maximumFractionDigits: 2});
@@ -383,7 +383,7 @@ const VERIFIED = {robinhood: ""};
 const VOICE = /*VOICE*/{
   "new": [
     "10am ET: the rules picked {who}. All in. The rules don't explain themselves.",
-    "New pick: {tkr}, named at 10am ET, bought at the close. Fixed rules, no hunches, every result stays up."
+    "New pick: {tkr}, named and bought at 10am ET. Fixed rules, no hunches, every result stays up."
   ],
   "up": [
     "Day {days} holding {tkr}: {ret}. S&P 500: {spx}. The rules have not noticed.",
@@ -688,10 +688,10 @@ function ledger() {
     const r = t.return_pct, cls = r == null ? "" : (r >= 0 ? "up" : "down");
     const ended = t.exit_reason ? `${esc(ENDED[t.exit_reason] || t.exit_reason)} · ${fmtDate(t.exit_date)}` : "holding";
     return `<tr><td>${fmtDate(t.date)}</td><td><b>${esc(t.ticker)}</b></td>
-      <td class="num">${t.fill ? usd(t.fill) : "at the close"}</td><td class="num hide-sm">${usd(t.stop)}</td>
-      <td class="num hide-sm">${usd(t.target)}</td><td>${ended}</td>
+      <td class="num">${t.fill ? usd(t.fill) : t.date < DATA.rules.minute_fill_from ? "at the close" : "-"}</td><td class="num hide-sm">${usd(t.stop)}</td>
+      <td class="num hide-sm">${usd(t.target)}</td><td class="num">${t.exit ? usd(t.exit) : "-"}</td><td>${ended}</td>
       <td class="num ${cls}">${r == null ? "-" : pct(r)}</td></tr>`;
-  }).join("") : `<tr><td colspan="7" style="color:var(--ink-2); text-align:center; padding:28px">No trades yet. The first call lands the next trading morning.</td></tr>`;
+  }).join("") : `<tr><td colspan="8" style="color:var(--ink-2); text-align:center; padding:28px">No trades yet. The first call lands the next trading morning.</td></tr>`;
 }
 
 function fineprint() {
@@ -793,7 +793,7 @@ function drawCard(tr) {
   text(SITE.replace("https://", ""), 64, 564, font(600, 22, true), C.blue);
   const early = DATA.stats.closed < MIN_N ? `${DATA.stats.closed} of ${MIN_N} picks finished, too early to tell · ` : "";
   const asOf = p && p.asOf ? `As of ${fmtDate(p.asOf)} close · ` : "";
-  text(`${asOf}${early}Virtual trades, not real money. Closing prices, before costs. Not advice.`, 64, 600, font(500, 17), C.ink3);
+  text(`${asOf}${early}Virtual trades, not real money. Before costs. Not advice.`, 64, 600, font(500, 17), C.ink3);
   if (VERIFIED.robinhood && p && p.open) text("✓ Verified trade on Robinhood", W - 64, 564, font(700, 20), C.good, "right");
   return cv;
 }
