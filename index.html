@@ -7,14 +7,14 @@
 <meta name="description" content="A computer tests dozens of strategies against the stock market every day. The winners pick one stock. Win or lose, every result stays up. Not investment advice.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="one-stock">
-<meta property="og:title" content="What if you could own the one stock that could give you the biggest returns? A computer tries, with a pretend $1,000.">
+<meta property="og:title" content="What if you could own the one stock with the biggest returns? A computer tries, with a pretend $1,000.">
 <meta property="og:description" content="A computer tests dozens of strategies against the stock market every day. The winners pick one stock. Win or lose, every result stays up. Not investment advice.">
 <meta property="og:url" content="https://spillai13.github.io/one-stock/">
 <meta property="og:image" content="https://spillai13.github.io/one-stock/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="What if you could own the one stock that could give you the biggest returns? A computer tries, with a pretend $1,000.">
+<meta name="twitter:title" content="What if you could own the one stock with the biggest returns? A computer tries, with a pretend $1,000.">
 <meta name="twitter:description" content="A computer tests dozens of strategies against the stock market every day. The winners pick one stock. Win or lose, every result stays up. Not investment advice.">
 <meta name="twitter:image" content="https://spillai13.github.io/one-stock/og.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -194,7 +194,7 @@ footer ul { padding-left: 18px; margin: 10px 0 0; } footer li { margin: 4px 0; }
   <!-- 1. The idea, in five seconds -->
   <div class="hero">
     <div class="eyebrow" id="eyebrow">A public experiment</div>
-    <h1 id="headline">What if you could own <span class="accent">the one stock</span> that could give you the biggest returns?</h1>
+    <h1 id="headline">What if you could own <span class="accent">the one stock</span> with the biggest returns?</h1>
     <p class="lede" id="lede">This is a public experiment to see if a computer can find it. Every market day, it
       tests dozens of strategies against the stock market, and all the money goes to one winning stock:
       its best shot at the most growth in the least time.
@@ -408,7 +408,7 @@ const VOICE = /*VOICE*/{
     "Trade {k} of {min} is done: {tkr} {ret}. Officially no longer 'too early to tell'. Now it's just 'early'."
   ]
 }/*/VOICE*/;
-const SHARE_LINE = "What if you could own the one stock that could give you the biggest returns? A computer is trying it with a pretend $1,000, against the stock market.";
+const SHARE_LINE = "What if you could own the one stock with the biggest returns? A computer is trying it with a pretend $1,000, against the stock market.";
 
 (function theme() {
   const root = document.documentElement;
@@ -440,7 +440,7 @@ function demoMode() {
     morning from ${fmtDate(DEMO.start)} to ${fmtDate(DEMO.end)}, seeing only what was known by then: the
     research results from the evening before, prices up to the previous close. Nothing here was called in advance,
     and the line is drawn dashed for that reason. <a href="index.html">The live record is here.</a></p>`;
-  $("headline").innerHTML = 'What if you could own <span class="accent">the one stock</span> that could give you the biggest returns?';
+  $("headline").innerHTML = 'What if you could own <span class="accent">the one stock</span> with the biggest returns?';
   $("curve-label").textContent = "Growth of $1,000, replayed from";
   $("cards-title").textContent = "Each call, as the replay made it";
   $("cards-sub").textContent = "What the rules could see at 10:00 on each past morning, and what happened next.";
@@ -775,7 +775,7 @@ function drawCard(tr) {
 
   // Footer: the question, the link, the honest labels
   g.fillStyle = C.line; g.fillRect(64, 480, W - 128, 1);
-  text("What if you could own the one stock that could give you the biggest returns?", 64, 526, font(700, 24), C.ink);
+  text("What if you could own the one stock with the biggest returns?", 64, 526, font(700, 28), C.ink);
   text(SITE.replace("https://", ""), 64, 564, font(600, 22, true), C.blue);
   const early = DATA.stats.closed < MIN_N ? `${DATA.stats.closed} of ${MIN_N} picks finished, too early to tell · ` : "";
   const asOf = p && p.asOf ? `As of ${fmtDate(p.asOf)} close · ` : "";
