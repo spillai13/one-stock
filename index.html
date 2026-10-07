@@ -247,14 +247,14 @@ footer ul { padding-left: 18px; margin: 10px 0 0; } footer li { margin: 4px 0; }
     </div>
 
     <h3 class="minor" id="cards-title">Each call, as it was made</h3>
-    <p class="sub" id="cards-sub">The stock, the price it sells at to cut a loss, the price it's aiming for. All set before the outcome.</p>
+    <p class="sub" id="cards-sub">The stock, the price it was bought at, the price it's aiming for. All set before the outcome.</p>
     <div class="cards" id="cards"></div>
 
     <h3 class="minor">Every trade</h3>
     <p class="sub">All of them. Losses, cut-offs and switches included.</p>
     <div class="card" style="padding:4px 8px; overflow-x:auto">
       <table>
-        <thead><tr><th>Called</th><th>Stock</th><th class="num">Bought at</th><th class="num hide-sm">Sell if it falls to</th>
+        <thead><tr><th>Called</th><th>Stock</th><th class="num">Bought at</th>
           <th class="num hide-sm">Aiming for</th><th class="num">Sold at</th><th>Ended</th><th class="num">Result</th></tr></thead>
         <tbody id="ledger"></tbody>
       </table>
@@ -664,7 +664,7 @@ function cards() {
         <div><div class="k">Bar to clear</div><div class="v">${tr.hurdle ? (tr.hurdle * 100).toFixed(2) + "%" : "-"}</div></div>
       </div>`}
       <div>
-        <div class="muted" style="display:flex; justify-content:space-between; margin-bottom:6px"><span>Sell if it falls to ${usd(tr.stop)}</span><span>Aiming for ${usd(tr.target)}</span></div>
+        <div class="muted" style="display:flex; justify-content:space-between; margin-bottom:6px"><span>Bought at ${tr.fill ? usd(tr.fill) : "the close"}</span><span>Aiming for ${usd(tr.target)}</span></div>
         <div class="bar"><i style="left:0; width:${pos(now)}%"></i>${tr.fill ? `<b style="left:${pos(tr.fill)}%"></b>` : ""}</div>
       </div>
       <div class="foot"><span class="muted">${ended}${gap}</span>
@@ -688,10 +688,10 @@ function ledger() {
     const r = t.return_pct, cls = r == null ? "" : (r >= 0 ? "up" : "down");
     const ended = t.exit_reason ? `${esc(ENDED[t.exit_reason] || t.exit_reason)} · ${fmtDate(t.exit_date)}` : "holding";
     return `<tr><td>${fmtDate(t.date)}</td><td><b>${esc(t.ticker)}</b></td>
-      <td class="num">${t.fill ? usd(t.fill) : t.date < DATA.rules.minute_fill_from ? "at the close" : "-"}</td><td class="num hide-sm">${usd(t.stop)}</td>
+      <td class="num">${t.fill ? usd(t.fill) : t.date < DATA.rules.minute_fill_from ? "at the close" : "-"}</td>
       <td class="num hide-sm">${usd(t.target)}</td><td class="num">${t.exit ? usd(t.exit) : "-"}</td><td>${ended}</td>
       <td class="num ${cls}">${r == null ? "-" : pct(r)}</td></tr>`;
-  }).join("") : `<tr><td colspan="8" style="color:var(--ink-2); text-align:center; padding:28px">No trades yet. The first call lands the next trading morning.</td></tr>`;
+  }).join("") : `<tr><td colspan="7" style="color:var(--ink-2); text-align:center; padding:28px">No trades yet. The first call lands the next trading morning.</td></tr>`;
 }
 
 function fineprint() {
