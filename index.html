@@ -91,7 +91,7 @@ h2 { font-size: clamp(26px, 3.6vw, 34px); letter-spacing: -0.025em; margin: 0 0 
 .dots i { width: 18px; height: 18px; border-radius: 50%; background: var(--line); }
 .dots i.win { background: var(--good); animation: pulse 2.2s infinite; }
 /* "Live" marker: only on things that really are current (the holding, the newest point,
-   the strategies winning now, the countdown). Never in the replay. */
+   the strategies winning now). Never in the replay. */
 .live { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--good);
   margin-right: 9px; vertical-align: 1px; animation: pulse 2.2s infinite; }
 .demo .live { display: none; }
@@ -196,7 +196,7 @@ footer ul { padding-left: 18px; margin: 10px 0 0; } footer li { margin: 4px 0; }
   <div class="hero">
     <div class="eyebrow" id="eyebrow">A public experiment</div>
     <h1 id="headline">What if you could own <span class="accent">the one stock with the biggest returns</span>?</h1>
-    <p class="lede" id="lede">This is a public experiment to see if a computer can find it. Every market day, it
+    <p class="lede" id="lede">This is a public experiment to see if a computer can find it. It
       tests dozens of strategies against the stock market, and all the money goes to one winning stock:
       its best shot at the most growth in the least time.
       Win or lose, every result stays here. Not investment advice.</p>
@@ -213,7 +213,6 @@ footer ul { padding-left: 18px; margin: 10px 0 0; } footer li { margin: 4px 0; }
     <div class="card statusline">
       <span class="now" id="st-now"></span>
       <span class="early" id="st-early"></span>
-      <span class="next" id="st-next"></span>
     </div>
     <div class="scoreboard" style="margin-top:16px">
       <div class="card stat">
@@ -261,14 +260,6 @@ footer ul { padding-left: 18px; margin: 10px 0 0; } footer li { margin: 4px 0; }
       </table>
     </div>
 
-    <h3 class="minor">Every day's call</h3>
-    <p class="sub">One call every market morning, including the days it held or sat in cash. Value is the $1,000 at that day's close, which shows up the morning after.</p>
-    <div class="card" style="padding:4px 8px; overflow:auto; max-height:420px">
-      <table>
-        <thead><tr><th>Day</th><th>Call</th><th class="num">Value at close</th></tr></thead>
-        <tbody id="days"></tbody>
-      </table>
-    </div>
   </section>
 
   <!-- 3. The why questions -->
@@ -280,14 +271,14 @@ footer ul { padding-left: 18px; margin: 10px 0 0; } footer li { margin: 4px 0; }
         <p>Spread the money across twenty stocks and you've built a small index fund: you get roughly the average. The idea here is the opposite. Put everything in the single stock with the best shot at the most growth in the least time. If it's the right one, that beats the average by a lot. The catch: one stock swings much harder than many, both ways.</p></div>
       <div class="card"><h3>Why not just buy an index fund?</h3>
         <p>For your savings, you should. An index fund gets you the market's average, the grey line on the chart. One stock, if it's the right one, gets you far more than the average. Whether the rules can find it often enough is what this experiment tests. If the blue line can't beat the grey one, the index fund wins, and this page will say so.</p></div>
-      <div class="card"><h3>Why every day?</h3>
-        <p>It checks every day; it doesn't trade every day. Most days the answer is "keep". Time matters as much as the gain: 10% in two weeks is worth far more than 10% in a year, because the money is free for the next pick sooner. So each morning it asks: is this still the best use of the money? If a better one shows up, it sells and switches.</p></div>
+      <div class="card"><h3>Why keep watching?</h3>
+        <p>It continuously watches the stock while the market is open, but it doesn't keep trading. Most of the time the answer is "keep". Time matters as much as the gain: 10% in two weeks is worth far more than 10% in a year, because the money is free for the next pick sooner. So it keeps asking: is this still the best use of the money? If a better one shows up, it sells and switches.</p></div>
       <div class="card"><h3>Why public?</h3>
-        <p>Anyone can explain yesterday's winners. The only honest test is calling them first. Every pick is written down at 10am ET, before the day's outcome is known, and stays on this page. Wins and losses sit side by side, and the record can't be quietly rewritten.</p></div>
+        <p>Anyone can explain yesterday's winners. The only honest test is calling them first. Every pick is written down the moment it's made, before the outcome is known, and stays on this page. Wins and losses sit side by side, and the record can't be quietly rewritten.</p></div>
       <div class="card"><h3>Why not just test it on past data?</h3>
         <p id="w-lose-p">Look back at any chart and the winners are obvious. Looking forward, almost nobody can tell. Most strategies that look smart on paper do worse than simply buying the whole market.</p></div>
       <div class="card"><h3>Why sell at a set price?</h3>
-        <p>Before it buys, it sets the price that cuts the loss (<span id="w-stop">8%</span> below what it paid). Close below that and it's sold, no hoping it comes back. One bad stock can't sink the whole experiment, and nobody gets to change the rule after the fact.</p></div>
+        <p>Before it buys, it sets the price that cuts the loss (<span id="w-stop">8%</span> below what it paid). The moment the price falls below that, it's sold. One bad stock can't sink the whole experiment, and nobody gets to change the rule after the fact.</p></div>
     </div>
   </section>
 
@@ -325,8 +316,8 @@ footer ul { padding-left: 18px; margin: 10px 0 0; } footer li { margin: 4px 0; }
       <div class="card rule"><div class="big">1 stock</div>
         <p>All in on one stock, never spread thin. To buy something new, it sells everything first.</p>
         <p class="warnline">One stock swings harder than many. This is an experiment. Don't copy it with money you need.</p></div>
-      <div class="card rule"><div class="big" id="r-stop"></div><p>The price that cuts a loss is set before it buys. Close below it, and it's sold at that close. No hoping.</p></div>
-      <div class="card rule"><div class="big">10am</div><p>One check every market day at 10am ET: keep the stock, swap it, or sell.</p></div>
+      <div class="card rule"><div class="big" id="r-stop"></div><p>The price that cuts a loss is set before it buys. The moment the price falls below it, it's sold.</p></div>
+      <div class="card rule"><div class="big">Continuously</div><p>Watched while the market is open: keep the stock, swap it, or sell, the moment the rules say so.</p></div>
     </div>
   </section>
 
@@ -334,7 +325,7 @@ footer ul { padding-left: 18px; margin: 10px 0 0; } footer li { margin: 4px 0; }
   <div class="card share-band" id="follow">
     <div id="loop-live">
       <h2>Stay in the loop</h2>
-      <p class="sub">Get each morning's call when it's made, wherever you already read things.</p>
+      <p class="sub">Get each call the moment it's made, wherever you already read things.</p>
       <div class="ctas" id="loop"></div>
     </div>
     <p class="muted" style="margin-top:22px">Know someone who'd want to watch? <button class="linkbtn" id="share-open">Share the experiment</button></p>
@@ -343,7 +334,7 @@ footer ul { padding-left: 18px; margin: 10px 0 0; } footer li { margin: 4px 0; }
   <footer>
     <div class="eyebrow">The fine print, in plain words</div>
     <ul>
-      <li>Real money since Oct 13: $1,000 in a Robinhood account buys and sells every call on this page. The record here prices each trade the same way it always has: bought at the first price after each call (about 10am ET), sold at the day's closing price, or at that same minute when switching to a new stock. The real account's prices differ by a few cents. Trades before Oct 13 were virtual, and calls before Oct 7 were bought at the close.</li>
+      <li>Real money since Oct 13: $1,000 in a live account buys and sells the calls on this page. Trades before Oct 13 were virtual. Prices may vary slightly.</li>
       <li>Results don't include trading costs, which would take roughly <span id="f-friction"></span> off each buy-and-sell.</li>
       <li>Until at least <span id="f-min"></span> trades have finished, the page says "too early to tell" instead of guessing. Averages come with a range showing how sure the result is.</li>
       <li>The research counts are re-checked every day and change; the date they're from is shown next to them. "In the race" means the strategies being tested now, not every one ever tried.</li>
@@ -372,20 +363,20 @@ footer ul { padding-left: 18px; margin: 10px 0 0; } footer li { margin: 4px 0; }
 </div>
 
 <script>
-const DATA = {"built": "2026-10-19", "era_start": "2026-09-26", "first_pick": "2026-09-28", "days": [{"date": "2026-09-28", "action": "BUY", "ticker": "DOCU"}, {"date": "2026-09-29", "action": "HOLD", "ticker": "DOCU"}, {"date": "2026-09-30", "action": "HOLD", "ticker": "DOCU"}, {"date": "2026-10-01", "action": "HOLD", "ticker": "DOCU"}, {"date": "2026-10-02", "action": "HOLD", "ticker": "DOCU"}, {"date": "2026-10-05", "action": "HOLD", "ticker": "DOCU"}, {"date": "2026-10-06", "action": "BUY", "ticker": "ANF"}, {"date": "2026-10-07", "action": "HOLD", "ticker": "ANF"}, {"date": "2026-10-08", "action": "HOLD", "ticker": "ANF"}, {"date": "2026-10-09", "action": "HOLD", "ticker": "ANF"}, {"date": "2026-10-12", "action": "HOLD", "ticker": "ANF"}, {"date": "2026-10-13", "action": "BUY", "ticker": "MAT"}, {"date": "2026-10-14", "action": "HOLD", "ticker": "MAT"}, {"date": "2026-10-15", "action": "BUY", "ticker": "EPAM"}, {"date": "2026-10-16", "action": "HOLD", "ticker": "EPAM"}, {"date": "2026-10-19", "action": "BUY", "ticker": "CRM"}], "trades": [{"date": "2026-09-28", "ticker": "DOCU", "name": "DocuSign, Inc.", "fill_date": "2026-09-28", "fill": 66.98, "stop": 61.62, "target": 73.68, "d_eff": 12.4, "exit_date": "2026-10-05", "exit": 70.03, "exit_reason": "invalidation", "exit_price_date": "2026-10-05", "return_pct": 4.554, "excess_spy_pct": 3.35, "days_held": 5.0, "replaces": ""}, {"date": "2026-10-06", "ticker": "ANF", "name": "Abercrombie & Fitch Company", "fill_date": "2026-10-06", "fill": 141.39, "stop": 130.08, "target": 155.53, "d_eff": 5.0, "exit_date": "2026-10-12", "exit": 145.91, "exit_reason": "invalidation", "exit_price_date": "2026-10-12", "return_pct": 3.197, "excess_spy_pct": 3.324, "days_held": 4.0, "replaces": ""}, {"date": "2026-10-13", "ticker": "MAT", "name": "Mattel, Inc.", "fill_date": "2026-10-13", "fill": 16.83, "stop": 15.48, "target": 18.51, "d_eff": 14.7, "exit_date": "2026-10-15", "exit": 17.17, "exit_reason": "switch", "exit_price_date": "2026-10-15", "return_pct": 2.02, "excess_spy_pct": 3.461, "days_held": 2.0, "replaces": ""}, {"date": "2026-10-15", "ticker": "EPAM", "name": "EPAM Systems, Inc.", "fill_date": "2026-10-15", "fill": 122.04, "stop": 112.28, "target": 134.24, "d_eff": 11.6, "exit_date": "2026-10-19", "exit": 122.33, "exit_reason": "switch", "exit_price_date": "2026-10-19", "return_pct": 0.238, "excess_spy_pct": 0.243, "days_held": 2.0, "replaces": "MAT"}, {"date": "2026-10-19", "ticker": "CRM", "name": "Salesforce, Inc.", "fill_date": "2026-10-19", "fill": 239.15, "stop": 220.02, "target": 267.37, "d_eff": 13.5, "exit_date": null, "exit": null, "exit_reason": null, "exit_price_date": null, "return_pct": null, "excess_spy_pct": null, "days_held": null, "replaces": "EPAM"}], "curve": [{"d": "2026-09-28", "t": 1000.0, "s": 1000.0}, {"d": "2026-09-29", "t": 1000.0, "s": 998.16}, {"d": "2026-09-30", "t": 1002.54, "s": 996.11}, {"d": "2026-10-01", "t": 1041.21, "s": 997.88}, {"d": "2026-10-02", "t": 1030.31, "s": 1005.26}, {"d": "2026-10-05", "t": 1045.54, "s": 1012.04}, {"d": "2026-10-06", "t": 1045.54, "s": 1017.61}, {"d": "2026-10-07", "t": 1031.12, "s": 1015.16}, {"d": "2026-10-08", "t": 1045.68, "s": 1010.87}, {"d": "2026-10-09", "t": 1054.34, "s": 1016.93}, {"d": "2026-10-12", "t": 1078.96, "s": 1016.31}, {"d": "2026-10-13", "t": 1077.04, "s": 1016.2}, {"d": "2026-10-14", "t": 1067.42, "s": 1005.21}, {"d": "2026-10-15", "t": 1102.74, "s": 1008.07}, {"d": "2026-10-16", "t": 1102.11, "s": 996.92}, {"d": "2026-10-19", "t": 1102.11, "s": null}], "stats": {"decisions": 16, "closed": 4, "open": 1, "return_per_trade": null, "min_n": 5}, "rules": {"stop_pct": 0.08, "friction": 0.003, "mode": "virtual", "minute_fill_from": "2026-10-07"}, "demo": null, "research": {"as_of": "2026-10-16", "tracked": 63, "beats": 1, "judged": 15, "loses": 6}, "calls_ahead": ["2026-10-19T10:00:00-04:00", "2026-10-20T10:00:00-04:00", "2026-10-21T10:00:00-04:00", "2026-10-22T10:00:00-04:00", "2026-10-23T10:00:00-04:00", "2026-10-26T10:00:00-04:00"]};
+const DATA = {"built": "2026-10-20", "era_start": "2026-09-26", "first_pick": "2026-09-28", "trades": [{"date": "2026-09-28", "ticker": "DOCU", "name": "DocuSign, Inc.", "fill_date": "2026-09-28", "fill": 66.98, "stop": 61.62, "target": 73.68, "d_eff": 12.4, "exit_date": "2026-10-05", "exit": 70.03, "exit_reason": "invalidation", "exit_price_date": "2026-10-05", "return_pct": 4.554, "excess_spy_pct": 3.35, "days_held": 5.0, "replaces": ""}, {"date": "2026-10-06", "ticker": "ANF", "name": "Abercrombie & Fitch Company", "fill_date": "2026-10-06", "fill": 141.39, "stop": 130.08, "target": 155.53, "d_eff": 5.0, "exit_date": "2026-10-12", "exit": 145.91, "exit_reason": "invalidation", "exit_price_date": "2026-10-12", "return_pct": 3.197, "excess_spy_pct": 3.324, "days_held": 4.0, "replaces": ""}, {"date": "2026-10-13", "ticker": "MAT", "name": "Mattel, Inc.", "fill_date": "2026-10-13", "fill": 16.83, "stop": 15.48, "target": 18.51, "d_eff": 14.7, "exit_date": "2026-10-15", "exit": 17.17, "exit_reason": "switch", "exit_price_date": "2026-10-15", "return_pct": 2.02, "excess_spy_pct": 3.461, "days_held": 2.0, "replaces": ""}, {"date": "2026-10-15", "ticker": "EPAM", "name": "EPAM Systems, Inc.", "fill_date": "2026-10-15", "fill": 122.04, "stop": 112.28, "target": 134.24, "d_eff": 11.6, "exit_date": "2026-10-19", "exit": 122.33, "exit_reason": "switch", "exit_price_date": "2026-10-19", "return_pct": 0.238, "excess_spy_pct": 0.243, "days_held": 2.0, "replaces": "MAT"}, {"date": "2026-10-19", "ticker": "CRM", "name": "Salesforce, Inc.", "fill_date": "2026-10-19", "fill": 239.15, "stop": 220.02, "target": 267.37, "d_eff": 13.5, "exit_date": "2026-10-19", "exit": 242.45, "exit_reason": "invalidation", "exit_price_date": "2026-10-19", "return_pct": 1.38, "excess_spy_pct": 1.409, "days_held": 0.0, "replaces": "EPAM"}], "curve": [{"d": "2026-09-28", "t": 1000.0, "s": 1000.0}, {"d": "2026-09-29", "t": 1000.0, "s": 998.16}, {"d": "2026-09-30", "t": 1002.54, "s": 996.11}, {"d": "2026-10-01", "t": 1041.21, "s": 997.88}, {"d": "2026-10-02", "t": 1030.31, "s": 1005.26}, {"d": "2026-10-05", "t": 1045.54, "s": 1012.04}, {"d": "2026-10-06", "t": 1045.54, "s": 1017.61}, {"d": "2026-10-07", "t": 1031.12, "s": 1015.16}, {"d": "2026-10-08", "t": 1045.68, "s": 1010.87}, {"d": "2026-10-09", "t": 1054.34, "s": 1016.93}, {"d": "2026-10-12", "t": 1078.96, "s": 1016.31}, {"d": "2026-10-13", "t": 1077.04, "s": 1016.2}, {"d": "2026-10-14", "t": 1067.42, "s": 1005.21}, {"d": "2026-10-15", "t": 1102.74, "s": 1008.07}, {"d": "2026-10-16", "t": 1102.11, "s": 996.92}, {"d": "2026-10-19", "t": 1118.6, "s": 1001.14}], "stats": {"decisions": 17, "closed": 5, "open": 0, "return_per_trade": [2.2778, 1.3296, 3.2329999999999997, 5], "min_n": 5}, "rules": {"stop_pct": 0.08, "friction": 0.003, "mode": "virtual", "minute_fill_from": "2026-10-07"}, "demo": null, "research": {"as_of": "2026-10-19", "tracked": 71, "beats": 1, "judged": 15, "loses": 6}};
 const $ = id => document.getElementById(id);
 const esc = v => String(v ?? "").replace(/[&<>"']/g, ch => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[ch]));
 const usd = v => "$" + v.toLocaleString("en-US", {minimumFractionDigits: 2, maximumFractionDigits: 2});
 const pct = v => (v >= 0 ? "+" : "") + v.toFixed(2) + "%";
 const fmtDate = s => new Date(s + "T12:00:00").toLocaleDateString("en-US", {month: "short", day: "numeric"});
 const SITE = "https://spillai13.github.io/one-stock/";
-// Ways to get each morning's call. Empty until that channel exists, and an empty one is hidden.
+// Ways to get each call. Empty until that channel exists, and an empty one is hidden.
 // x/threads: handle without @. whatsapp: channel invite link. email: signup page.
 const SUBSCRIBE = {x: "", threads: "", whatsapp: "", email: ""};
 const CHANNELS = [["x", "X", h => "https://x.com/" + h], ["threads", "Threads", h => "https://www.threads.net/@" + h],
   ["whatsapp", "WhatsApp", u => u], ["email", "Email", u => u]];
 // The one thing to share: what the experiment is. Fixed; the sharer's own words go in front of it.
-const BLURB = "A public experiment: a computer picks one stock every market day and goes all in. Win or lose, every result stays up.";
+const BLURB = "A public experiment: a computer picks one stock and goes all in. Win or lose, every result stays up.";
 
 (function theme() {
   const root = document.documentElement;
@@ -453,23 +444,6 @@ function hero() {
        <b>${esc(h.name || h.ticker)}${h.name ? " (" + esc(h.ticker) + ")" : ""}</b>
        <span class="meta">Since ${fmtDate(h.fill_date || h.date)}${gain}</span>`
     : DATA.first_pick ? `<span class="lbl">Holding now</span><b>Cash</b><span class="meta">Nothing cleared the bar today.</span>` : "";
-  if (!DEMO) countdown();
-}
-
-// Next 10:00 ET call, from the trading calendar the build passed in.
-function countdown() {
-  const ahead = DATA.calls_ahead || [];
-  const tick = () => {
-    const now = Date.now();
-    // Each entry is a 10:00 New York time stamp with its own offset, so daylight saving is handled at build.
-    const next = ahead.map(a => ({d: a.slice(0, 10), t: Date.parse(a)})).find(x => x.t > now);
-    if (!next) { $("st-next").textContent = ""; return; }
-    const s = Math.max(0, Math.floor((next.t - now) / 1000));
-    const hh = Math.floor(s / 3600), mm = Math.floor(s % 3600 / 60), ss = s % 60;
-    const day = new Date(next.d + "T12:00:00").toLocaleDateString("en-US", {weekday: "short", month: "short", day: "numeric"});
-    $("st-next").textContent = `Next check in ${hh}h ${String(mm).padStart(2, "0")}m ${String(ss).padStart(2, "0")}s · ${day}, 10am ET`;
-  };
-  tick(); setInterval(tick, 1000);
 }
 
 function why() {
@@ -633,7 +607,7 @@ function cards() {
     const gap = tr.exit_price_date && tr.exit_date && tr.exit_price_date !== tr.exit_date
       ? ` · priced at the last available close (${fmtDate(tr.exit_price_date)}) because the price feed stopped` : "";
     return `<div class="card tcard" id="call-${esc(tr.date)}">
-      <div class="top"><div><div class="tk">${esc(tr.ticker)}</div>${tr.name ? `<div class="muted">${esc(tr.name)}</div>` : ""}<div class="when">Called ${fmtDate(tr.date)}, 10am ET${tr.replaces ? " · replaced " + esc(tr.replaces.split(":").pop()) : ""}</div></div>
+      <div class="top"><div><div class="tk">${esc(tr.ticker)}</div>${tr.name ? `<div class="muted">${esc(tr.name)}</div>` : ""}<div class="when">Called ${fmtDate(tr.date)}${tr.replaces ? " · replaced " + esc(tr.replaces.split(":").pop()) : ""}</div></div>
         <div class="ret ${cls}">${r == null ? (DEMO ? "open" : '<span class="live"></span>open') : pct(r)}</div></div>
       ${tr.edge == null ? "" : `<div class="knew">
         <div><div class="k">Shortlist</div><div class="v">${esc(funnel[0] || "-")} → ${esc(funnel[funnel.length - 1] || "-")}</div></div>
@@ -668,27 +642,6 @@ function ledger() {
       <td class="num hide-sm">${usd(t.target)}</td><td class="num">${t.exit ? usd(t.exit) : "-"}</td><td>${ended}</td>
       <td class="num ${cls}">${r == null ? "-" : pct(r)}</td></tr>`;
   }).join("") : `<tr><td colspan="7" style="color:var(--ink-2); text-align:center; padding:28px">No trades yet. The first call lands the next trading morning.</td></tr>`;
-}
-
-const SOLD = {stop: "cut the loss", target: "hit its target", invalidation: "reason to own it went away"};
-
-function days() {
-  const rows = (DATA.days || []).slice().reverse();
-  const value = Object.fromEntries(DATA.curve.map(c => [c.d, c.t]));
-  const traded = Object.fromEntries(DATA.trades.map(t => [t.date, t]));
-  const call = d => {
-    const t = traded[d.date];
-    if (d.action === "BUY") return t && t.replaces ? `Sold ${esc(t.replaces)}, bought <b>${esc(d.ticker)}</b>` : `Bought <b>${esc(d.ticker)}</b>`;
-    if (d.action === "HOLD") return `Held <b>${esc(d.ticker)}</b>`;
-    if (d.action === "CASH") return "Stayed in cash";
-    if (d.action === "CLOSE") return `Sold <b>${esc(d.ticker)}</b>`;
-    return "-";
-  };
-  const exits = d => DATA.trades.filter(t => t.exit_date === d.date && SOLD[t.exit_reason])
-    .map(t => t.ticker === d.ticker ? `, then sold it (${SOLD[t.exit_reason]})` : ` · sold ${esc(t.ticker)} (${SOLD[t.exit_reason]})`).join("");
-  $("days").innerHTML = rows.length ? rows.map(d => `<tr><td>${fmtDate(d.date)}</td><td>${call(d)}${exits(d)}</td>
-      <td class="num">${value[d.date] != null ? usd(value[d.date]) : "next morning"}</td></tr>`).join("")
-    : `<tr><td colspan="3" style="color:var(--ink-2); text-align:center; padding:28px">No calls yet.</td></tr>`;
 }
 
 function fineprint() {
@@ -753,7 +706,7 @@ $("sheet-close").onclick = () => $("sheet").classList.remove("on");
 $("sheet").onclick = e => { if (e.target.id === "sheet") $("sheet").classList.remove("on"); };
 document.addEventListener("keydown", e => { if (e.key === "Escape") $("sheet").classList.remove("on"); });
 
-demoMode(); hero(); why(); funnel(); scoreboard(); draw(); cards(); shortlist(); ledger(); days(); fineprint(); loop();
+demoMode(); hero(); why(); funnel(); scoreboard(); draw(); cards(); shortlist(); ledger(); fineprint(); loop();
 $("play").onclick = play;
 let rz; window.addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(() => { if (!playing) draw(); }, 120); });
 </script>
