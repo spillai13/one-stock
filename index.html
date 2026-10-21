@@ -85,19 +85,12 @@ h2 { font-size: clamp(26px, 3.6vw, 34px); letter-spacing: -0.025em; margin: 0 0 
 .faq { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
 .faq h3 { margin: 0 0 8px; font-size: 18px; letter-spacing: -0.01em; }
 .faq p { margin: 0; color: var(--ink-2); font-size: 15px; }
-/* The funnel: each row's bar width is its share of what was tracked. */
-.race { display: grid; grid-template-columns: 1fr 1.25fr; gap: 28px; align-items: center; }
-.dots { display: flex; flex-wrap: wrap; gap: 7px; }
-.dots i { width: 18px; height: 18px; border-radius: 50%; background: var(--line); }
-.dots i.win { background: var(--good); animation: pulse 2.2s infinite; }
 /* "Live" marker: only on things that really are current (the holding, the newest point,
    the strategies winning now). Never in the replay. */
 .live { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--good);
   margin-right: 9px; vertical-align: 1px; animation: pulse 2.2s infinite; }
 .demo .live { display: none; }
-@media (prefers-reduced-motion: reduce) { .dot, .live, .dots i.win { animation: none; } }
-.race-cap { font: 700 20px/1.3 Inter; margin-top: 16px; letter-spacing: -0.01em; }
-.race-cap b { color: var(--good); }
+@media (prefers-reduced-motion: reduce) { .dot, .live { animation: none; } }
 .rsteps { display: flex; flex-direction: column; gap: 14px; }
 .rsteps > div { display: grid; grid-template-columns: 30px 1fr; gap: 10px; }
 .rsteps .k { font: 700 14px/1.6 JetBrains Mono, monospace; color: var(--trader); }
@@ -176,7 +169,6 @@ footer ul { padding-left: 18px; margin: 10px 0 0; } footer li { margin: 4px 0; }
 @media (max-width: 760px) {
   .wrap { padding: 0 16px; }
   .cards, .faq, .scoreboard, .rules { grid-template-columns: 1fr; }
-  .race { grid-template-columns: 1fr; }
   .hide-sm { display: none; }
 }
 </style>
@@ -287,19 +279,12 @@ footer ul { padding-left: 18px; margin: 10px 0 0; } footer li { margin: 4px 0; }
     <h2>How one stock gets picked</h2>
     <p class="sub">Trading strategies compete every trading day. Only a winner gets to pick.</p>
     <div class="card">
-      <div class="race">
-        <div>
-          <div class="dots" id="dots" aria-hidden="true"></div>
-          <div class="race-cap" id="race-cap"></div>
-        </div>
-        <div class="rsteps">
-          <div><span class="k">01</span><div><h4>Many strategies, one race</h4><p>Each is a different way of choosing stocks. All of them are measured against the S&amp;P 500 and against the winning strategies.</p></div></div>
-          <div><span class="k">02</span><div><h4>Most lose</h4><p>Beating the market once is luck. A strategy has to keep winning.</p></div></div>
-          <div><span class="k">03</span><div><h4>Only winners pick</h4><p>Stop beating the market, and a strategy stops picking. It can happen any day.</p></div></div>
-          <div><span class="k">04</span><div><h4>All in on one</h4><p>From the winners' picks, it puts everything in one stock and holds it until its rules say sell. No winner? It buys nothing.</p></div></div>
-        </div>
+      <div class="rsteps">
+        <div><span class="k">01</span><div><h4>Many strategies, one race</h4><p>Each is a different way of choosing stocks. All of them are measured against the S&amp;P 500 and against the winning strategies.</p></div></div>
+        <div><span class="k">02</span><div><h4>Most lose</h4><p>Beating the market once is luck. A strategy has to keep winning.</p></div></div>
+        <div><span class="k">03</span><div><h4>Only winners pick</h4><p>Stop beating the market, and a strategy stops picking. It can happen any day.</p></div></div>
+        <div><span class="k">04</span><div><h4>All in on one</h4><p>From the winners' picks, it puts everything in one stock and holds it until its rules say sell. No winner? It buys nothing.</p></div></div>
       </div>
-      <div class="asof" id="funnel-asof"></div>
     </div>
   </section>
 
@@ -337,8 +322,6 @@ footer ul { padding-left: 18px; margin: 10px 0 0; } footer li { margin: 4px 0; }
       <li>Real money since Oct 13: $1,000 in a live account buys and sells the calls on this page. Trades before Oct 13 were virtual. Prices may vary slightly.</li>
       <li>Results don't include trading costs, which would take roughly <span id="f-friction"></span> off each buy-and-sell.</li>
       <li>Until at least <span id="f-min"></span> trades have finished, the page says "too early to tell" instead of guessing. Averages come with a range showing how sure the result is.</li>
-      <li>The research counts are re-checked every day and change; the date they're from is shown next to them. "In the race" means the strategies being tested now, not every one ever tried.</li>
-      <li>"Beat the market" means: in past trades, by more than luck usually explains, on a strict statistical test. The past doesn't promise the future. That's what this experiment checks.</li>
       <li>The record restarted on Sep 26, 2026 with this engine. Calls from an earlier, retired engine (Sep 2–25) were taken off the record then; they remain in the project's private history.</li>
       <li>This is not investment advice.</li>
       <li id="f-link"></li>
@@ -363,7 +346,7 @@ footer ul { padding-left: 18px; margin: 10px 0 0; } footer li { margin: 4px 0; }
 </div>
 
 <script>
-const DATA = {"built": "2026-10-20", "era_start": "2026-09-26", "first_pick": "2026-09-28", "trades": [{"date": "2026-09-28", "ticker": "DOCU", "name": "DocuSign, Inc.", "fill_date": "2026-09-28", "fill": 66.98, "stop": 61.62, "target": 73.68, "d_eff": 12.4, "exit_date": "2026-10-05", "exit": 70.03, "exit_reason": "invalidation", "exit_price_date": "2026-10-05", "return_pct": 4.554, "excess_spy_pct": 3.35, "days_held": 5.0, "replaces": ""}, {"date": "2026-10-06", "ticker": "ANF", "name": "Abercrombie & Fitch Company", "fill_date": "2026-10-06", "fill": 141.39, "stop": 130.08, "target": 155.53, "d_eff": 5.0, "exit_date": "2026-10-12", "exit": 145.91, "exit_reason": "invalidation", "exit_price_date": "2026-10-12", "return_pct": 3.197, "excess_spy_pct": 3.324, "days_held": 4.0, "replaces": ""}, {"date": "2026-10-13", "ticker": "MAT", "name": "Mattel, Inc.", "fill_date": "2026-10-13", "fill": 16.83, "stop": 15.48, "target": 18.51, "d_eff": 14.7, "exit_date": "2026-10-15", "exit": 17.17, "exit_reason": "switch", "exit_price_date": "2026-10-15", "return_pct": 2.02, "excess_spy_pct": 3.461, "days_held": 2.0, "replaces": ""}, {"date": "2026-10-15", "ticker": "EPAM", "name": "EPAM Systems, Inc.", "fill_date": "2026-10-15", "fill": 122.04, "stop": 112.28, "target": 134.24, "d_eff": 11.6, "exit_date": "2026-10-19", "exit": 122.33, "exit_reason": "switch", "exit_price_date": "2026-10-19", "return_pct": 0.238, "excess_spy_pct": 0.243, "days_held": 2.0, "replaces": "MAT"}, {"date": "2026-10-19", "ticker": "CRM", "name": "Salesforce, Inc.", "fill_date": "2026-10-19", "fill": 239.15, "stop": 220.02, "target": 267.37, "d_eff": 13.5, "exit_date": "2026-10-19", "exit": 242.45, "exit_reason": "invalidation", "exit_price_date": "2026-10-19", "return_pct": 1.38, "excess_spy_pct": 1.409, "days_held": 0.0, "replaces": "EPAM"}], "curve": [{"d": "2026-09-28", "t": 1000.0, "s": 1000.0}, {"d": "2026-09-29", "t": 1000.0, "s": 998.16}, {"d": "2026-09-30", "t": 1002.54, "s": 996.11}, {"d": "2026-10-01", "t": 1041.21, "s": 997.88}, {"d": "2026-10-02", "t": 1030.31, "s": 1005.26}, {"d": "2026-10-05", "t": 1045.54, "s": 1012.04}, {"d": "2026-10-06", "t": 1045.54, "s": 1017.61}, {"d": "2026-10-07", "t": 1031.12, "s": 1015.16}, {"d": "2026-10-08", "t": 1045.68, "s": 1010.87}, {"d": "2026-10-09", "t": 1054.34, "s": 1016.93}, {"d": "2026-10-12", "t": 1078.96, "s": 1016.31}, {"d": "2026-10-13", "t": 1077.04, "s": 1016.2}, {"d": "2026-10-14", "t": 1067.42, "s": 1005.21}, {"d": "2026-10-15", "t": 1102.74, "s": 1008.07}, {"d": "2026-10-16", "t": 1102.11, "s": 996.92}, {"d": "2026-10-19", "t": 1118.6, "s": 1001.14}], "stats": {"decisions": 17, "closed": 5, "open": 0, "return_per_trade": [2.2778, 1.3296, 3.2329999999999997, 5], "min_n": 5}, "rules": {"stop_pct": 0.08, "friction": 0.003, "mode": "virtual", "minute_fill_from": "2026-10-07"}, "demo": null, "research": {"as_of": "2026-10-19", "tracked": 71, "beats": 1, "judged": 15, "loses": 6}};
+const DATA = {"built": "2026-10-21", "era_start": "2026-09-26", "first_pick": "2026-09-28", "trades": [{"date": "2026-09-28", "ticker": "DOCU", "name": "DocuSign, Inc.", "fill_date": "2026-09-28", "fill": 66.98, "stop": 61.62, "target": 73.68, "d_eff": 12.4, "exit_date": "2026-10-05", "exit": 70.03, "exit_reason": "invalidation", "exit_price_date": "2026-10-05", "return_pct": 4.554, "excess_spy_pct": 3.35, "days_held": 5.0, "replaces": ""}, {"date": "2026-10-06", "ticker": "ANF", "name": "Abercrombie & Fitch Company", "fill_date": "2026-10-06", "fill": 141.39, "stop": 130.08, "target": 155.53, "d_eff": 5.0, "exit_date": "2026-10-12", "exit": 145.91, "exit_reason": "invalidation", "exit_price_date": "2026-10-12", "return_pct": 3.197, "excess_spy_pct": 3.324, "days_held": 4.0, "replaces": ""}, {"date": "2026-10-13", "ticker": "MAT", "name": "Mattel, Inc.", "fill_date": "2026-10-13", "fill": 16.83, "stop": 15.48, "target": 18.51, "d_eff": 14.7, "exit_date": "2026-10-15", "exit": 17.17, "exit_reason": "switch", "exit_price_date": "2026-10-15", "return_pct": 2.02, "excess_spy_pct": 3.461, "days_held": 2.0, "replaces": ""}, {"date": "2026-10-15", "ticker": "EPAM", "name": "EPAM Systems, Inc.", "fill_date": "2026-10-15", "fill": 122.04, "stop": 112.28, "target": 134.24, "d_eff": 11.6, "exit_date": "2026-10-19", "exit": 122.33, "exit_reason": "switch", "exit_price_date": "2026-10-19", "return_pct": 0.238, "excess_spy_pct": 0.243, "days_held": 2.0, "replaces": "MAT"}, {"date": "2026-10-19", "ticker": "CRM", "name": "Salesforce, Inc.", "fill_date": "2026-10-19", "fill": 239.15, "stop": 220.02, "target": 267.37, "d_eff": 13.5, "exit_date": "2026-10-19", "exit": 242.45, "exit_reason": "invalidation", "exit_price_date": "2026-10-19", "return_pct": 1.38, "excess_spy_pct": 1.409, "days_held": 0.0, "replaces": "EPAM"}, {"date": "2026-10-21", "ticker": "MAT", "name": "Mattel, Inc.", "fill_date": "2026-10-21", "fill": 16.89, "stop": 15.54, "target": 18.58, "d_eff": 14.5, "exit_date": null, "exit": null, "exit_reason": null, "exit_price_date": null, "return_pct": null, "excess_spy_pct": null, "days_held": null, "replaces": ""}], "curve": [{"d": "2026-09-28", "t": 1000.0, "s": 1000.0}, {"d": "2026-09-29", "t": 1000.0, "s": 998.16}, {"d": "2026-09-30", "t": 1002.54, "s": 996.11}, {"d": "2026-10-01", "t": 1041.21, "s": 997.88}, {"d": "2026-10-02", "t": 1030.31, "s": 1005.26}, {"d": "2026-10-05", "t": 1045.54, "s": 1012.04}, {"d": "2026-10-06", "t": 1045.54, "s": 1017.61}, {"d": "2026-10-07", "t": 1031.12, "s": 1015.16}, {"d": "2026-10-08", "t": 1045.68, "s": 1010.87}, {"d": "2026-10-09", "t": 1054.34, "s": 1016.93}, {"d": "2026-10-12", "t": 1078.96, "s": 1016.31}, {"d": "2026-10-13", "t": 1077.04, "s": 1016.2}, {"d": "2026-10-14", "t": 1067.42, "s": 1005.21}, {"d": "2026-10-15", "t": 1102.74, "s": 1008.07}, {"d": "2026-10-16", "t": 1102.11, "s": 996.92}, {"d": "2026-10-19", "t": 1118.6, "s": 1001.14}, {"d": "2026-10-20", "t": 1118.6, "s": 1004.49}], "stats": {"decisions": 18, "closed": 5, "open": 1, "return_per_trade": [2.2778, 1.3296, 3.2329999999999997, 5], "min_n": 5}, "rules": {"stop_pct": 0.08, "friction": 0.003, "mode": "virtual", "minute_fill_from": "2026-10-07"}, "demo": null};
 const $ = id => document.getElementById(id);
 const esc = v => String(v ?? "").replace(/[&<>"']/g, ch => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[ch]));
 const usd = v => "$" + v.toLocaleString("en-US", {minimumFractionDigits: 2, maximumFractionDigits: 2});
@@ -448,21 +431,6 @@ function hero() {
 
 function why() {
   $("w-stop").textContent = Math.round(DATA.rules.stop_pct * 100) + "%";
-  const r = DATA.research;
-  if (!r) return;
-  $("w-lose-p").textContent = `It was, and that's the problem. Look back at any chart and the winners are obvious; looking forward, almost nobody can tell. Of the ${r.judged} ideas the research had enough data to judge, ${r.loses} did reliably worse than simply buying the whole market. Only calls made in advance count.`;
-}
-
-function funnel() {
-  const r = DATA.research;
-  if (!r) { document.querySelector("#how .race > div:first-child").style.display = "none"; return; }
-  // One dot per strategy in the race; the winners lit, spread evenly through the field.
-  const lit = new Set(Array.from({length: r.beats}, (_, i) => Math.floor((i + 0.5) * r.tracked / r.beats)));
-  $("dots").innerHTML = Array.from({length: r.tracked}, (_, i) => `<i${lit.has(i) ? ' class="win"' : ""}></i>`).join("");
-  $("race-cap").innerHTML = r.beats
-    ? `${r.tracked} in the race · <b>${r.beats}</b> beating the market in testing`
-    : `${r.tracked} in the race · no winner right now, so nothing new gets bought.`;
-  $("funnel-asof").textContent = `As of ${fmtDate(r.as_of)}. The rest are losing, too close to call, or too new to judge. Strategies are added, dropped and re-tested all the time, and the methods keep evolving, so these numbers change.`;
 }
 
 // The S&P series is dated a trading day behind the stock prices by design (stocks P2.263), so the
@@ -706,7 +674,7 @@ $("sheet-close").onclick = () => $("sheet").classList.remove("on");
 $("sheet").onclick = e => { if (e.target.id === "sheet") $("sheet").classList.remove("on"); };
 document.addEventListener("keydown", e => { if (e.key === "Escape") $("sheet").classList.remove("on"); });
 
-demoMode(); hero(); why(); funnel(); scoreboard(); draw(); cards(); shortlist(); ledger(); fineprint(); loop();
+demoMode(); hero(); why(); scoreboard(); draw(); cards(); shortlist(); ledger(); fineprint(); loop();
 $("play").onclick = play;
 let rz; window.addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(() => { if (!playing) draw(); }, 120); });
 </script>
