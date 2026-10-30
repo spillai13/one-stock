@@ -243,7 +243,7 @@ footer ul { padding-left: 18px; margin: 10px 0 0; } footer li { margin: 4px 0; }
     <div class="cards" id="cards"></div>
 
     <h3 class="minor">Every trade</h3>
-    <p class="sub">All of them. Losses, cut-offs and switches included.</p>
+    <p class="sub">All of them. Losses, cut-offs and switches included.<span id="trades-proof"></span></p>
     <div class="card" style="padding:4px 8px; overflow-x:auto">
       <table>
         <thead><tr><th>Called</th><th>Stock</th><th class="num">Bought at</th>
@@ -288,11 +288,6 @@ footer ul { padding-left: 18px; margin: 10px 0 0; } footer li { margin: 4px 0; }
     </div>
   </section>
 
-  <section id="shortlist-section">
-    <h2>Today's shortlist</h2>
-    <p class="sub" id="shortlist-sub"></p>
-    <div class="chips" id="shortlist"></div>
-  </section>
 
   <!-- 5. Rules -->
   <section id="rules">
@@ -353,6 +348,7 @@ const usd = v => "$" + v.toLocaleString("en-US", {minimumFractionDigits: 2, maxi
 const pct = v => (v >= 0 ? "+" : "") + v.toFixed(2) + "%";
 const fmtDate = s => new Date(s + "T12:00:00").toLocaleDateString("en-US", {month: "short", day: "numeric"});
 const SITE = "https://spillai13.github.io/one-stock/";
+const PROOF = "https://github.com/spillai13/one-stock/commits/main/trades.csv";
 // Ways to get each call. Empty until that channel exists, and an empty one is hidden.
 // x/threads: handle without @. whatsapp: channel invite link. email: signup page.
 const SUBSCRIBE = {x: "", threads: "", whatsapp: "", email: ""};
@@ -380,7 +376,8 @@ const EARLY = DATA.stats.closed < MIN_N;
 
 function demoMode() {
   if (!DEMO) {
-    $("f-link").innerHTML = `Want to see it run? <a href="demo.html">Watch a replay on past data</a> (reconstructed, not live).`;
+    $("f-link").remove();
+    $("trades-proof").innerHTML = ` Each buy and sell is also a line in a public file, and its <a href="${PROOF}" target="_blank" rel="noopener">history on GitHub</a> shows when each line was written.`;
     return;
   }
   document.title = "One stock: replay on past data";
@@ -592,7 +589,8 @@ function cards() {
 }
 
 function shortlist() {
-  if (!DATA.shortlist || DEMO) { $("shortlist-section").style.display = "none"; return; }  // public pages never carry it
+  // public pages never carry it, and their build removes the section entirely
+  if (!DATA.shortlist || DEMO) { const sec = $("shortlist-section"); if (sec) sec.remove(); return; }
   const s = DATA.shortlist;
   $("shortlist-sub").textContent = s.length
     ? `${s.length} stocks that a strategy which passed the test is buying right now (as of ${fmtDate(DATA.shortlist_as_of)}). The rules pick from these, and only these.`
