@@ -94,5 +94,11 @@
   "action": "SELL",
   "stock": "PYPL",
   "price": 56.95
+ },
+ {
+  "date": "2026-11-02",
+  "action": "BUY",
+  "stock": "PYPL",
+  "price": 58.66
  }
 ]
