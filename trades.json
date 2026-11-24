@@ -106,5 +106,11 @@
   "action": "SELL",
   "stock": "PYPL",
   "price": 53.49
+ },
+ {
+  "date": "2026-11-24",
+  "action": "BUY",
+  "stock": "ALV",
+  "price": 118.42
  }
 ]
