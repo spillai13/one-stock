@@ -112,5 +112,17 @@
   "action": "BUY",
   "stock": "ALV",
   "price": 118.42
+ },
+ {
+  "date": "2026-11-25",
+  "action": "SELL",
+  "stock": "ALV",
+  "price": 117.39
+ },
+ {
+  "date": "2026-11-25",
+  "action": "BUY",
+  "stock": "LULU",
+  "price": 104.33
  }
 ]
